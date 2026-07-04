@@ -1,9 +1,9 @@
 ---
-title: "TryHackMe: [Room Name] — Learning Notes"
-description: "My notes working through the [Room Name] room: enumeration, foothold, and what I learned."
-date: 2026-07-04 20:00:00 +0800
+title: "TryHackMe: [Offensive Security Intro] — Learning Notes"
+description: "My notes working through the [Offensive Security Intro] room: enumeration, foothold, and what I learned."
+date: 2026-07-04 08:30:00 +0800
 categories: [Writeups, TryHackMe]
-tags: [linux, enumeration, nmap]   # lowercase; 3–6 is plenty
+tags: [offensive security, hacking, careers]   # lowercase; 3–6 is plenty
 toc: true
 comments: true
 ---
@@ -40,18 +40,19 @@ If in doubt on commercial use: email support@tryhackme.com before publishing.
 
 ## Overview
 
-- **Room:** [Room Name] — [link](https://tryhackme.com/room/xxxx)
-- **Difficulty:** Easy / Medium / Hard
-- **What it teaches:** One or two sentences on the room's focus.
+- **Room:** [Offensive Security Intro] — [link](https://tryhackme.com/room/offensivesecurityintro)
+- **Difficulty:** Easy
+- **What it teaches:** Act like an ethical hacker and hack a fake bank.
 
 A 2–3 sentence summary of what I did and the biggest thing I took away. *(Write this last.)*
+Used Gobuster CLI to scan for hidden files and folders (that were not made private), then 
 
 ## Reconnaissance
 
-Started with a service scan:
+Gobuster scans a website for files or folders by referring to a wordlist
 
 ```bash
-nmap -sC -sV -oN nmap/initial.txt <TARGET_IP>
+gobuster -u http://fakebank.thm -w wordlist.txt dir
 ```
 
 What stood out, and which thread I pulled on first — and *why* I chose it over the others.
@@ -61,20 +62,22 @@ What stood out, and which thread I pulled on first — and *why* I chose it over
 How I got initial access — the commands *and* the reasoning behind each, not just the one that worked.
 
 ```bash
-# the actual steps, in my own words
+/images (Status: 301)
+/bank-transfer (Status: 200)
 ```
+Gobuster tells me which pages (Status:200)
 
 ## Privilege Escalation
 
-*(Delete if the room has no privesc.)* The enumeration that revealed the path from user to root, and the exploit itself.
+I then enter the URL into the browser's address bar and access the admin page
 
 ## Lessons Learned
 
-- **New to me:** a tool or concept I met for the first time.
-- **Where I got stuck:** the snag, and what actually fixed it.
-- **Do differently:** what I'd try earlier next time.
-- **Revisit:** anything to come back and study properly.
+- **New to me:** Gobuster can scan for hidden admin pages
+- **Where I got stuck:** Typing the commands for Gobuster
+- **Do differently:** Understand that Gobuster needs you to specify the website and a wordlist
+- **Revisit:** -
 
 ## References
 
-- Docs, hints, or other writeups that helped.
+- 
