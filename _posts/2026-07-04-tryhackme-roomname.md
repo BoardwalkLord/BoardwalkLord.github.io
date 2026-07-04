@@ -1,5 +1,5 @@
 ---
-title: "TryHackMe: [Offensive Security Intro] — Learning Notes"
+title: "TryHackMe: Offensive Security Intro — Learning Notes"
 description: "My notes working through the [Offensive Security Intro] room: enumeration, foothold, and what I learned."
 date: 2026-07-04 08:30:00 +0800
 categories: [Writeups, TryHackMe]
@@ -40,41 +40,39 @@ If in doubt on commercial use: email support@tryhackme.com before publishing.
 
 ## Overview
 
-- **Room:** [Offensive Security Intro] — [link](https://tryhackme.com/room/offensivesecurityintro)
+- **Room:** Offensive Security Intro — [link](https://tryhackme.com/room/offensivesecurityintro)
 - **Difficulty:** Easy
-- **What it teaches:** Act like an ethical hacker and hack a fake bank.
+- **What it teaches:** Got into the shoes of an ethical hacker and performed a simple hack of a fake bank. Got to know a few possible career branches in the field of offensive security.
 
-A 2–3 sentence summary of what I did and the biggest thing I took away. *(Write this last.)*
-Used Gobuster CLI to scan for hidden files and folders (that were not made private), then 
+## Scan
 
-## Reconnaissance
-
-Gobuster scans a website for files or folders by referring to a wordlist
+Used Gobuster to scan a website for hidden admin pages by referring to a wordlist
 
 ```bash
 gobuster -u http://fakebank.thm -w wordlist.txt dir
 ```
 
-What stood out, and which thread I pulled on first — and *why* I chose it over the others.
-
-## Exploitation / Foothold
-
-How I got initial access — the commands *and* the reasoning behind each, not just the one that worked.
+The results as below:
 
 ```bash
 /images (Status: 301)
 /bank-transfer (Status: 200)
 ```
-Gobuster tells me which pages (Status:200)
+The result with "Status:200" are the hidden admin pages
 
-## Privilege Escalation
+## Exploit
 
-I then enter the URL into the browser's address bar and access the admin page
+I can then enter the full path of the admin page in the browser address bar to access the admin page, and perform the hack.
+
+## Careers
+
+I'm introduced to 3 available careers in the field of offensive security: Penetration Tester, Red Teamer, Security Engineer.
+
 
 ## Lessons Learned
 
-- **New to me:** Gobuster can scan for hidden admin pages
-- **Where I got stuck:** Typing the commands for Gobuster
+- **New to me:** Use Gobuster to scan for hidden admin pages
+- **Where I got stuck:** Getting the CLI correct for Gobuster
 - **Do differently:** Understand that Gobuster needs you to specify the website and a wordlist
 - **Revisit:** -
 
