@@ -5,8 +5,6 @@ order: 4
 ---
 
 
-## About
-
 I'm Kenneth Wong, based in Malaysia, working toward a career in
 cybersecurity with a particular interest in the defensive and
 governance side of the field — security operations, incident response,
