@@ -1,7 +1,7 @@
 ---
 title: "TryHackMe: What is Networking? — Learning Notes"
 description: "My notes on the What is Networking room: networks and the internet, how devices are identified by IP and MAC addresses, MAC spoofing, and ping."
-date: 2026-07-11 21:00:00 +0800
+date: 2026-07-11 01:00:00 +0800
 categories: [Writeups, TryHackMe]
 tags: [networking, ip-address, mac-address, fundamentals]
 toc: true
