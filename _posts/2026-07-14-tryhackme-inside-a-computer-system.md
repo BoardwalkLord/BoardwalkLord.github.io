@@ -15,7 +15,13 @@ comments: true
 
 > These are my personal learning notes as I work through TryHackMe — honest notes, not an authoritative guide. Corrections welcome.
 {: .prompt-info }
-
+> **On sources & TryHackMe's material:** These are independent learning notes in my
+> own words. They describe *my* experience of the room and deliberately reproduce none
+> of TryHackMe's room text, task content, screenshots, flags, or answers — go do the
+> room to get those. Room names and the linked URL are used for reference only.
+> TryHackMe and its content are the property of TryHackMe Ltd; this post is not
+> affiliated with, authorised by, or endorsed by them.
+{: .prompt-tip }
 
 ## Overview
 
