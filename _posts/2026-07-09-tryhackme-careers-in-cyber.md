@@ -26,19 +26,53 @@ I read this room a little differently from most people. The usual framing is "wh
 
 ## The roles
 
-**Security Analyst.** The room describes them as integral to building security measures — exploring and evaluating company networks to produce actionable data and recommendations *for engineers* to act on, and working with *various stakeholders* to understand the security landscape. *My read:* this is the role that needs to be detail-oriented and personable at once, because so much of it depends on getting information out of other people.
+I've paraphrased what each role *is* in my own words rather than tracking the room's
+descriptions, and kept my own reactions clearly marked as mine.
 
-**Security Engineer.** They *develop and implement* the security solutions, working across a breadth of attacks — web application attacks, network threats, evolving tactics — to reduce the risk of attack and data loss. *My read:* the most technically demanding role of the set, and the one I'd expect to be hardest to hire well.
+**Security Analyst.** A defensive, evaluation-focused role: study the organisation's
+networks, work out where the weaknesses are, and turn that into concrete
+recommendations for the engineers who'll act on them. A lot of it runs on talking to
+people across the business to understand what's actually being protected. *My read:* the
+role that has to be detail-oriented and personable at once, because so much of it depends
+on getting information out of other people.
 
-**Incident Responder.** A highly pressurised, real-time role built on plans, policies, and protocols enacted during and after a breach. The room introduces the response metrics **MTTD, MTTA, and MTTR** — mean time to *detect*, *acknowledge*, and *recover*. *My read:* this suits someone who performs under pressure through trained muscle memory and a clear SOP, not improvisation.
+**Security Engineer.** The builders — they design and stand up the actual defences, and
+have to account for a wide spread of attack types, from web-app exploits to network
+threats to whatever's newly in fashion. *My read:* the most technically demanding role of
+the set, and the one I'd expect to be hardest to hire well.
 
-**Digital Forensics Examiner.** The room literally opens with "if you like to play detective" — collecting and analysing evidence while *observing legal procedures*, whether for law enforcement or for investigating incidents like policy violations inside a company. *My read:* fits someone observant, inquisitive, and meticulous, with the discipline to follow proper legal process.
+**Incident Responder.** A high-pressure, real-time role that lives or dies on having
+plans and procedures ready *before* a breach, then executing them during and after one.
+The room introduces the response-time metrics **MTTD, MTTA, and MTTR** — mean time to
+*detect*, *acknowledge*, and *recover*. *My read:* suits someone who performs under
+pressure on trained instinct and a clear procedure, not improvisation.
 
-**Malware Analyst.** This is the one the room is most technically emphatic about: a malware analyst is *sometimes called a reverse-engineer*, and the work *requires a strong programming background, especially low-level languages like assembly and C*. It splits into static analysis (reverse-engineering the code) and dynamic analysis (running samples in a controlled environment) to work out what the malware does, how to detect it, and how to report it. *My read:* this is one of the deepest technical roles, not primarily a communication one — though I'd add that clearly reporting findings (e.g. to a security engineer, so defences get updated) still matters.
+**Digital Forensics Examiner.** The detective role — gather and examine evidence while
+staying inside proper legal process, whether supporting law enforcement or investigating
+something internal like a policy breach. *My read:* fits someone observant, inquisitive,
+and meticulous, with the discipline to follow correct procedure.
 
-**Penetration Tester.** The room frames this neutrally: systematic ("systemised") hacking to uncover flaws and vulnerabilities across systems, networks, and web apps, then exploiting them to evaluate risk so the company can fix issues before a real attack. It's about breadth — finding *many* vulnerabilities to keep defences in good standing. *My read:* this feels like the most independent, self-directed role of the set.
+**Malware Analyst.** The role the room is most emphatic about on the technical side:
+essentially a reverse-engineer, and it leans on serious low-level programming ability
+(assembly, C). The work divides into picking apart the code without running it, and
+running samples safely to watch what they do — the aim being to understand the malware,
+detect it, and document it. *My read:* one of the deepest technical roles, not primarily
+a communication one — though I'd add that reporting findings clearly (so a security
+engineer can update defences) still matters.
 
-**Red Teamer.** The room draws a specific line here: red teamers are *similar to pentesters but more targeted*. Where a pentester sweeps broadly for vulnerabilities, a red teamer is enacted to test the company's **detection and response** — imitating real criminals, emulating attacks, *maintaining access and avoiding detection*. Engagements can run up to a month, usually by an *external* team, and suit organisations with *mature* security programs. *My read:* the interesting twist is that this is arguably the stealthier, more patient role — the goal isn't just to break in, but to see whether you'd even be noticed.
+**Penetration Tester.** Authorised, methodical hacking: sweep broadly across systems,
+networks and web apps for flaws, then actually exploit them to gauge real risk, so the
+organisation can fix things before a genuine attacker arrives. The emphasis is breadth —
+find as many issues as possible. *My read:* the most independent, self-directed role of
+the set.
+
+**Red Teamer.** Related to pen testing but pointed at a different question. Where a pen
+tester sweeps widely for vulnerabilities, a red teamer is there to test whether the
+organisation can actually *detect and respond* — imitating a real adversary, staying
+quiet, keeping access, avoiding notice, often over weeks and usually from outside. It
+suits organisations whose security is already fairly mature. *My read:* the twist is that
+this is the more patient, stealthier role — the goal isn't just to get in, it's to find
+out whether anyone would even notice.
 
 ## What surprised me
 
