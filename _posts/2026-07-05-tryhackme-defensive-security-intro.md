@@ -66,7 +66,7 @@ What it drove home: defence is an *active* job. You're not just waiting for an a
 
 ## Lessons Learned
 
-- **New to me:** A SOC is at the forefront, constantly monitoring for signs of intrusion. DFIR takes action after an intrusion has occurred.
+- **New to me:** Think of a SOC as the always-on watch — its job is to keep looking for signs that someone's trying to get in, continuously rather than in bursts. DFIR takes action after an intrusion has occurred.
 - **What surprised me:** Defence is a heavy responsibility — you have to be right all the time, at a moment when attackers keep getting more creative and only need to be right once.
 - **Connects to my bigger goal:** DFIR and malware analysis are genuinely interesting, and the more I understand them, the better I can serve clients.
 - **Revisit:** Malware analysis — I want to understand how malware actually works, and how it gets neutralised.
