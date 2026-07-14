@@ -1,7 +1,7 @@
 ---
 title: "TryHackMe: Inside a Computer System — Learning Notes"
 description: "My notes on the Inside a Computer System room — meeting the components I used to upgrade for gaming, this time as an attack surface."
-date: 2026-07-14 21:00:00 +0800
+date: 2026-07-14 14:30:00 +0800
 categories: [Writeups, TryHackMe]
 tags: [fundamentals, hardware, boot-process, uefi, blue-team]
 toc: true
