@@ -1,7 +1,7 @@
 ---
 title: "TryHackMe: Computer Types — Learning Notes"
 description: "My notes on the Computer Types room — the eight types of computer, why every design is a trade-off, and why the ones you can't see are the ones that go missing from an asset inventory."
-date: 2026-07-16 21:00:00 +0800
+date: 2026-07-15 21:00:00 +0800
 categories: [Writeups, TryHackMe]
 tags: [fundamentals, hardware, iot, embedded, asset-inventory]
 toc: true
