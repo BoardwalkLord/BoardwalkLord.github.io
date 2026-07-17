@@ -1,7 +1,7 @@
 ---
 title: "TryHackMe: Windows Basics — Learning Notes"
 description: "My notes on the Windows Basics room — read not as a beginner's tour but as an inventory of the security controls Windows already ships with, and how they map to the OS duties from the previous room."
-date: 2026-07-18 21:00:00 +0800
+date: 2026-07-17 21:00:00 +0800
 categories: [Writeups, TryHackMe]
 tags: [fundamentals, windows, defender, firewall, least-privilege, blue-team]
 toc: true
