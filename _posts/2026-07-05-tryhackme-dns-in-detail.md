@@ -15,23 +15,19 @@ comments: true
 
 > These are my personal learning notes as I work through TryHackMe — honest notes, not an authoritative guide. Corrections welcome.
 {: .prompt-info }
-> **On sources & TryHackMe's material:** These are independent learning notes in my
-> own words. They describe *my* experience of the room and deliberately reproduce none
-> of TryHackMe's room text, task content, screenshots, flags, or answers — go do the
-> room to get those. Room names and the linked URL are used for reference only.
-> TryHackMe and its content are the property of TryHackMe Ltd; this post is not
-> affiliated with, authorised by, or endorsed by them.
+
+> **On sources & TryHackMe's material:** These are independent learning notes in my own words. They describe *my* experience of the room and deliberately reproduce none of TryHackMe's room text, task content, screenshots, flags, or answers — go do the room to get those. Room names and the linked URL are used for reference only. TryHackMe and its content are the property of TryHackMe Ltd; this post is not affiliated with, authorised by, or endorsed by them.
 {: .prompt-tip }
 
 ## Overview
 
 - **Room:** DNS in Detail — [link](https://tryhackme.com/room/dnsindetail)
 - **Difficulty:** Info / Easy
-- **What it teaches:** What DNS actually is, how a domain name is structured, and the main types of DNS records that make websites and email work.
+- **What it teaches:** What DNS is, how a domain name is structured, and the main types of DNS records that make websites and email work.
 
 ## What DNS actually does
 
-The simplest way I can put it: DNS is a translator. Computers find each other using numerical addresses (IP addresses), but humans are terrible at remembering numbers. DNS lets us type a human-friendly name — an "English" address — and quietly converts it into the numerical one the machines actually use. Every time you visit a site by name, a DNS lookup happened in the background to turn that name into an IP.
+The simplest way I can put it: DNS is a translator. Computers find each other using numerical addresses (IP addresses), but humans are bad at remembering numbers. DNS lets us type a human-friendly name — an "English" address — and converts it into the numerical one the machines use. Every time you visit a site by name, a DNS lookup happened in the background to turn that name into an IP.
 
 ## Anatomy of a domain name
 
@@ -43,12 +39,12 @@ A domain name isn't one flat thing — it's built in layers, read right to left:
 
 TLDs themselves split into two families:
 
-- **gTLD (generic)** — categorised by *purpose*. For example `.edu` for educational sites and `.gov` for government.
-- **ccTLD (country-code)** — tied to a *country*. For example `.my` for Malaysia.
+- **gTLD (generic)** — categorised by purpose. For example `.edu` for educational sites and `.gov` for government.
+- **ccTLD (country-code)** — tied to a country. For example `.my` for Malaysia.
 
 ## DNS record types
 
-A domain's DNS records are the actual instructions that say "this name points here." The ones the room covered:
+A domain's DNS records are the instructions that say "this name points here." The ones the room covered:
 
 | Record | What it maps to | Plain-language example |
 |--------|-----------------|------------------------|
@@ -58,14 +54,14 @@ A domain's DNS records are the actual instructions that say "this name points he
 | **MX** | A mail server | Says where email for the domain should go. E.g. `mywebsite.com`'s mail is handled by an external mail server. |
 | **TXT** | Free-form text | Holds arbitrary text records. *I don't fully understand yet why these matter — flagged for a revisit below.* |
 
-The A/AAAA/CNAME/MX group clicked fairly quickly once I saw them side by side: A and AAAA are "where the site is," CNAME is "actually, go look at this other name instead," and MX is "where the email goes." TXT is the odd one out that I haven't got a handle on.
+The A/AAAA/CNAME/MX group clicked once I saw them side by side: A and AAAA are "where the site is," CNAME is "actually, go look at this other name instead," and MX is "where the email goes." TXT is the odd one out that I haven't got a handle on.
 
 ## Lessons Learned
 
-- **New to me:** The whole layered structure of a domain — subdomain, second-level, TLD — and that TLDs are categorised either by purpose (gTLD) or by country (ccTLD).
-- **What surprised me:** `.com` was originally meant for *commercial* sites specifically. That meaning has completely eroded — now everyone wants a `.com`, even for a personal blog. The label outlived its original intent.
+- **New to me:** The layered structure of a domain — subdomain, second-level, TLD — and that TLDs are categorised either by purpose (gTLD) or by country (ccTLD).
+- **What surprised me:** `.com` was originally meant for commercial sites specifically. That meaning has completely eroded — now everyone wants a `.com`, even for a personal blog. The label outlived its original intent.
 - **What I found tough:** Keeping the record types straight. Writing out what each one maps to (above) is what made them stick — A/AAAA to IP addresses, CNAME to another name, MX to a mail server.
-- **Revisit:** TXT records. I genuinely don't yet see why a free-text DNS record is useful — that's the gap I want to close next.
+- **Revisit:** TXT records. I don't yet see why a free-text DNS record is useful — that's the gap I want to close next.
 
 ## References
 
