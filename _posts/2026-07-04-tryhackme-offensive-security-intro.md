@@ -37,12 +37,8 @@ If in doubt on commercial use: email support@tryhackme.com before publishing.
 
 > These are my personal learning notes as I work through TryHackMe — honest notes, not an authoritative guide. Corrections welcome.
 {: .prompt-info }
-> **On sources & TryHackMe's material:** These are independent learning notes in my
-> own words. They describe *my* experience of the room and deliberately reproduce none
-> of TryHackMe's room text, task content, screenshots, flags, or answers — go do the
-> room to get those. Room names and the linked URL are used for reference only.
-> TryHackMe and its content are the property of TryHackMe Ltd; this post is not
-> affiliated with, authorised by, or endorsed by them.
+
+> **On sources & TryHackMe's material:** These are independent learning notes in my own words. They describe *my* experience of the room and deliberately reproduce none of TryHackMe's room text, task content, screenshots, flags, or answers — go do the room to get those. Room names and the linked URL are used for reference only. TryHackMe and its content are the property of TryHackMe Ltd; this post is not affiliated with, authorised by, or endorsed by them.
 {: .prompt-tip }
 
 ## Overview
@@ -51,7 +47,7 @@ If in doubt on commercial use: email support@tryhackme.com before publishing.
 - **Difficulty:** Info / Easy
 - **What it teaches:** The attacker mindset, and directory brute-forcing — finding pages on a website that exist but aren't linked anywhere.
 
-This was my first proper hands-on room. The scenario is a deliberately vulnerable online bank called "FakeBank." The whole point is to show that a page being *hidden* is not the same as a page being *protected* — and that a simple tool can find the hidden ones in seconds.
+This was my first proper hands-on room. The scenario is a deliberately vulnerable online bank called "FakeBank." The point is to show that a page being hidden is not the same as a page being protected — and that a simple tool can find the hidden ones in seconds.
 
 ## Reconnaissance
 
@@ -73,15 +69,15 @@ Reading the output, most guesses came back as misses, but a handful returned a s
 
 That unlinked directory turned out to be an internal bank-transfer page — a form that could move money between accounts, sitting there with no login and no access control in front of it. Because I could reach it directly by URL, I could just use it.
 
-> I'm deliberately not printing the exact path here — the learning point is the *technique* (brute-forcing reveals unlinked pages), not the specific answer to this room. Anyone doing the room will find it in seconds with the scan above.
+> I'm not printing the exact path here — the learning point is the technique (brute-forcing reveals unlinked pages), not the specific answer to this room. Anyone doing the room will find it in seconds with the scan above.
 {: .prompt-tip }
 
 The "attack" was simply: open the page the scan revealed, fill in the transfer form, submit. No exploit code, no clever trick — the vulnerability was entirely that a sensitive page was left unprotected on the assumption that being unlinked made it safe.
 
 ## Lessons Learned
 
-- **New to me:** Gobuster, and the whole idea of directory brute-forcing. I hadn't realised how much of "hacking" at this level is just *enumeration* — methodically discovering what's there — rather than dramatic exploits.
-- **The core concept that stuck:** "security through obscurity" is not security. Hiding a page (not linking to it) does nothing if the page itself has no authentication. Reachability equals usability for an attacker.
+- **New to me:** Gobuster, and the whole idea of directory brute-forcing. I hadn't realised how much of "hacking" at this level is just enumeration — methodically discovering what's there — rather than dramatic exploits.
+- **The core concept that stuck:** "security through obscurity" is not security. Hiding a page (not linking to it) does nothing if the page itself has no authentication. If an attacker can reach it, they can use it.
 - **Where I got tripped up:** I first pointed Gobuster at the wrong URL/port and got nothing but errors — a good reminder to confirm the target is actually up and I'm hitting the right address before assuming the tool is misbehaving.
 - **Do differently / revisit:** I want to understand HTTP status codes properly (200 vs 301 vs 403 vs 404), because reading them is what tells you a "hidden" page exists. That's clearly foundational and I'll come back to it.
 
