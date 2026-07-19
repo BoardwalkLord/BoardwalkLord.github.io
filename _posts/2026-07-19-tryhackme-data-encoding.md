@@ -31,21 +31,21 @@ The mechanics were familiar to me, so the value here was formalising them and lo
 
 ## ASCII
 
-ASCII uses **7 bits** to cover **128 characters** (= 2⁷): English letters, digits, punctuation, and some control characters. That's enough for English. Any character maps to a number, which you can write in binary, decimal, or hex.
+ASCII uses **7 bits** (= 7 binary digits) to cover **128 characters** (= 2⁷): English letters, digits, punctuation, and some control characters. That's enough character slots for use by the English language. Any character maps to a number, which you can write in binary, decimal, or hex format.
 
-A worked example with my own text. If I type `KEN1` and save it with ASCII encoding, the computer stores these numbers:
+A worked example with my own text. If I type `KEN1` and save it with ASCII encoding, the computer can store these numbers in the following formats:
 
 - **Hexadecimal** (the common way to show it): `4B 45 4E 31`
 - **Decimal**: `75 69 78 49`
 - **Binary**: `01001011 01000101 01001110 00110001`
 
-All three are the same four numbers written three ways. One property worth remembering: consecutive characters get consecutive codes. If `A` is `41` in hex, then `B` and `C` are `42` and `43`. The same holds for `a`–`z` and `0`–`9`, which is why you can work out one from another.
+All three are the same four characters (KEN1) written three ways. One property worth remembering: consecutive characters get consecutive codes. If `A` is `41` in hex, then `B` and `C` are `42` and `43`. The same holds for `a`–`z` and `0`–`9`, which is why you can work out one from another.
 
 ## Why ASCII isn't enough
 
 ASCII covers English. Other languages don't fit. Arabic needs more than 250 characters for its ligatures and diacritics; Japanese daily-use Kanji runs to a couple of thousand; Chinese standards define tens of thousands. Seven bits can't hold that.
 
-The first patch was to use the eighth bit for another 128 characters, through regional standards like ISO-8859-1 (Western European) and ISO-8859-2 (Central/Eastern European). But that created a new problem: the *same* number means *different* characters in different standards. Save `Ø` in Latin-1 and open it as Latin-2, and it shows as `Ř`. The number didn't change; the map you read it with did. (More on that below — it's the heart of the room.)
+The first patch was to use the eighth bit for another 128 characters, through regional standards like ISO-8859-1 (Western European) and ISO-8859-2 (Central/Eastern European). But that created a new problem: the *same* number means *different* characters in different standards. Save `Ø` in Latin-1 and open it as Latin-2, and it shows as `Ř`. The number you saved into the computer didn't change; the map you read it with did. (More on that below — it's the heart of the room.)
 
 ## Unicode — and the distinction the room is really teaching
 
@@ -59,21 +59,28 @@ The current standard defines close to 157,000 characters, including several thou
 
 Here's the distinction I had to get precise, because it's easy to blur: **Unicode is the map (character → code point). UTF-8, UTF-16 and UTF-32 are three different ways to store those code points as actual bytes.** They aren't "types of Unicode" — they're encodings *of* Unicode. Same relationship as a phone number versus how you write it down.
 
-- **UTF-8** — the most common on the web. Variable width: 1 to 4 bytes per character, chosen by complexity. The first 128 characters (the ASCII ones) use exactly 1 byte and are byte-for-byte identical to old ASCII, so UTF-8 is backward-compatible with it. Ω uses 2 bytes; an emoji like 🔥 uses 4. No wasted space.
+- **UTF-8** — the most common on the web. Variable width: 1 to 4 bytes per character, chosen by complexity. For example, the first 128 characters (the ASCII ones) use exactly 1 byte and are byte-for-byte identical to old ASCII, so UTF-8 is backward-compatible with it. Ω uses 2 bytes; an emoji like 🔥 uses 4. Stored in your computer in the smallest size possible; the most efficient use of space.
 - **UTF-16** — 2 bytes for common characters, 4 for rarer ones (emoji, ancient scripts). The 4-byte case uses a pair of 16-bit units called a surrogate pair.
-- **UTF-32** — always 4 bytes per character. Simplest, but the most wasteful.
+- **UTF-32** — always 4 bytes per character. Simplest, but the most wasteful use of storage space on your computer.
 
 ## The core rule: encode and decode with the same map
 
-The rule that makes the whole subject click: **use the same encoding to decode that you used to encode.** Save `ABC` as ASCII and the bytes on disk are `41 42 43`. Read those bytes back as ASCII and you get `ABC`. Read them with a different encoding and you don't.
+The rule that makes the whole subject click: **use the same encoding to decode that you used to encode.** Save `ABC` as ASCII and the bytes on disk are `41 42 43` in hexadecimal format. Read those bytes back as ASCII and you get `ABC`. Read them with a different encoding and you don't get `ABC`.
 
 In my notes I'd asked what actually happens if you decode with the wrong one — so I worked it through, because the answer is the interesting part.
 
-Take the bytes `41 42 43`. Decoded as **UTF-16** instead of ASCII, UTF-16 reads **two bytes at a time**, not one. So `41 42` combine into a *single* character (a CJK character — U+4142 `䅂` or U+4241 `䉁`, depending on byte order), and the leftover `43` is a dangling half. You don't get "ABC" with wrong-looking letters — you get a *different number of characters entirely*, because the two encodings disagree about how many bytes make one character.
+Take the bytes `41 42 43`. Decoded as **UTF-16** instead of ASCII, UTF-16 reads **two bytes at a time**, not one. So `41 42` combine into a *single* character, and the leftover `43` is a dangling half. You don't get "ABC" with wrong-looking letters — you get a *different number of characters entirely*, because the two encodings disagree about how many bytes make one character (ASCII reads 1 byte as 1 character; UTF-16 reads 2 bytes as 1 character).
 
-(That "depending on byte order" is a real second subtlety: UTF-16 can store the two bytes high-first or low-first, which is why files sometimes begin with a byte-order mark. I'm noting it rather than chasing it here.)
+That single character comes out as one of two Chinese characters — `䅂` or `䉁` — and *which* one depends on something called **byte order**. This is worth a short detour, because it answers a question I had.
 
-That disagreement — same bytes on disk, different grouping when read — is the mechanism behind everything else in the room. It's why a file saved in one encoding and opened in another shows gibberish (the term for it is *mojibake*). The bytes never changed; only the map used to read them did.
+UTF-16 uses two bytes per character, and there are two conventions for which byte comes first:
+
+- **Big-endian** treats the first byte as the more significant one: `41 42` is read as the number `0x4142` → `䅂`.
+- **Little-endian** treats the *second* byte as the more significant one: the same `41 42` is read as `0x4241` → `䉁`.
+
+So it isn't that UTF-16 reads "left to right" or "right to left" — both conventions read the bytes in the order they sit on disk. They differ on which byte counts as the "big" half of the number. Different systems settled on different conventions, which is why some files begin with a small marker called a *byte-order mark* that announces which one they used. The takeaway: the same two bytes can mean two different characters depending on that convention, before you've even involved the wrong encoding.
+
+That disagreement — same bytes on disk, different grouping when read — is the mechanism behind everything else in the room. It's why a file saved in one encoding and opened in another shows gibberish (the term for it is *mojibake*). The bytes saved to storage never changed; only the map used to read them did.
 
 ## Connects to my bigger goal
 
@@ -81,20 +88,24 @@ Two threads, one I'd expected and one that turned out to matter more.
 
 **Malware analysis (the expected one).** The hex-editor thread from the last room continues here. Opening an executable in a hex editor shows bytes; some of those byte runs are text (embedded strings, error messages, hard-coded paths, signatures) and reading them means decoding with the right encoding. Recognising ASCII/UTF byte patterns in a hex dump is part of picking out the human-readable footprints inside a binary.
 
-**Encoding as a security surface (the one worth more).** The room frames wrong-encoding as a display nuisance. From a security angle it's more than that:
+**Encoding as a security surface (the one worth more).** The room frames wrong-encoding as a display nuisance (mojibake). From a security angle it's more than that:
 
-- **Input validation and normalisation.** If a system filters out dangerous characters, but checks the input in a *different* encoding than the one the system later acts on, an attacker can slip a character past the filter by submitting it in an encoding the filter didn't expect. The lesson: normalise everything to one encoding *before* you validate, or your filter is inspecting a different string than the one that eventually runs. Same bytes, different grouping — the exact mechanism from above, turned into a bypass.
-- **Homoglyphs — which already bit me.** A few rooms back I lost an hour to a filename that used a Unicode middle-dot (`·`) where I'd meant a full stop (`.`); it looked identical and Jekyll silently ignored the file. This room explains the machinery under that: Unicode contains many characters that *look* the same but *encode* differently. It's the same trick behind lookalike phishing domains (a Cyrillic `а` standing in for a Latin `a` in a URL). The thing that cost me an hour and the thing that fuels homograph attacks are the same underlying property.
+- **Input validation and normalisation.** Suppose a website tries to block a known attack by filtering out a dangerous string of characters. A concrete example: web servers treat `../` as "go up one folder," so an attacker who can sneak `../../../` into a filename can climb out of the intended directory and reach files they shouldn't (this is called *path traversal*). So the site adds a filter that rejects any input containing `../`.
+
+  Here's where encoding defeats it. The `/` character can *also* be written in URL-encoded form as `%2f`. So the attacker sends `..%2f..%2f..%2f` instead. The filter checks the incoming text, sees no literal `../`, and lets it through. Only *afterwards* does the server decode `%2f` back into `/` — and now the dangerous `../` exists, past the filter, right before the server acts on it. The filter inspected one version of the string; the server acted on a different one.
+
+  The fix is **normalisation**: decode and convert the input into one single, canonical form *first*, and only *then* run the filter — so the filter checks the same string the server will actually use. The rule of thumb is "normalise, then validate," never the other way round. It's the same "same bytes, different reading" idea from earlier, turned from an accident into a deliberate bypass.
+- **Homoglyphs — which already bit me.** A few rooms back I lost an hour to a filename that used a Unicode middle-dot (`·`) where I'd meant a full stop (`.`); it looked identical and Jekyll (my website's CMS/site generator) silently ignored the file. This room explains the machinery under that: Unicode contains many characters that *look* the same but *encode* differently. It's the same trick behind lookalike phishing domains (a Cyrillic `а` standing in for a Latin `a` in a URL). The thing that cost me an hour and the thing that fuels homograph attacks are the same underlying property.
 
 ## Where I got stuck
 
-Nothing hard — this built directly on the previous room. The one part I slowed down on was proving to myself what the "wrong encoding" failure actually looks like at the byte level, rather than just repeating that it "shows gibberish." Working out that UTF-16 reads two bytes at a time — so the character *count* changes, not just their appearance — is what made the whole mojibake idea concrete instead of hand-wavy.
+Nothing hard — this built directly on the previous room. The one part I slowed down on was proving to myself what the "wrong encoding" failure actually looks like at the byte level, rather than just repeating that it "shows gibberish." Working out that UTF-16 reads two bytes at a time — so the character *count* changes (in the `41 42` example, from 2 characters down to 1), not just their appearance — is what made the whole mojibake idea concrete rather than vague.
 
 ## Revisit
 
-- **Overlong UTF-8 and encoding-bypass bugs** — the input-validation angle above, done properly: how filters get defeated by alternative encodings, and how normalisation is supposed to stop it.
+- **Overlong UTF-8 and encoding-bypass bugs** — the input-validation angle above, done properly: more ways filters get defeated by alternative encodings, beyond the URL-encoded `%2f` example, and where "normalise, then validate" gets tricky in practice.
 - **Homograph / IDN attacks** — the phishing side of the homoglyph problem, and how browsers and registrars try to defend against lookalike domains.
-- **Reading strings out of a binary** — using the encoding knowledge here to pull human-readable text out of an executable in a hex editor or with a `strings`-type tool.
+- **Reading strings out of a binary** — using the encoding knowledge here to pull human-readable text out of an executable in a hex editor or with a `strings`-type tool (a real utility, standard on Linux, and available on Windows via Sysinternals or WSL).
 
 ## Lessons Learned
 
