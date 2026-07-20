@@ -84,7 +84,31 @@ That leaves `.1` through `.254` — exactly **254 usable host addresses**. So th
 
 **Why `.1` or `.254` for the gateway?** Pure convention: pick a predictable end of the range so every device and admin knows where the exit is, without having to look it up. Nothing technical forces it.
 
-**How this actually shows subnetting** (my second question): yes — my guess was right. In the simple case here, changing the **third octet** gives you a different subnet. `192.168.1.0` can be HR and `192.168.2.0` can be finance — two separate subnets, each with its own `.1–.254` host range. (The precise split is set by something called the subnet mask, which can divide more finely than whole octets; but for this room, "third octet = different subnet" is the right mental model.)
+**How this actually shows subnetting** (my second question): yes — my guess was right. In the simple case here, changing the **third octet** gives you a different subnet. `192.168.1.0` can be HR and `192.168.2.0` can be finance — two separate subnets, each with its own `.1–.254` host range. (The precise split is set by something called the subnet mask, covered just below.)
+
+### Putting one subnet together
+
+Laying out a single subnet end to end, using the room's range as "Subnet A":
+
+- `192.168.1.0` — the **network address** (names Subnet A; not assignable to a device).
+- `192.168.1.1`–`192.168.1.254` — the **254 host addresses**, one per device.
+- `192.168.1.1` *or* `192.168.1.254` — one of these is reserved by convention as the **default gateway**, the device that sends data out to other networks. The gateway is just an ordinary host address given a special job — a *specialisation* of a host address, not a separate kind.
+- `192.168.1.255` — the **broadcast address**, used to send one message to *every* device on the subnet at once.
+
+A second subnet ("Subnet B") mirrors this exactly, one octet over: `192.168.2.0` is its network address, and `192.168.2.1`–`.254` / `.255` are its hosts, gateway and broadcast. Same structure, different network.
+
+### Where the subnet mask fits in
+
+The one term the room leaves implicit is the **subnet mask**, and it's the piece that explains *why* all the numbers above fall where they do.
+
+Every IP address is secretly in two parts: a **network portion** (which network you're on) and a **host portion** (which device you are). The subnet mask is what decides where that split falls. For `192.168.1.100` with the common mask `255.255.255.0`:
+
+- the `255`s mark the **network** part → `192.168.1` is the network;
+- the `0` marks the **host** part → the last octet is the device.
+
+That's why only the last octet varies in the examples above — the first three octets are "locked" as the network — which is exactly what produces the `.0`–`.255` range, and after reserving `.0` and `.255`, the 254 usable hosts. It's also why changing the **third** octet makes a whole different subnet: `192.168.1.x` and `192.168.2.x` differ in the *locked network part*, so they're separate networks.
+
+The `/24` shorthand (as in `192.168.1.0/24`) is the same idea counted in bits: 24 of the address's 32 bits are the network part (three octets × 8 bits), leaving 8 bits — 2⁸ = 256 addresses — for hosts. Change the mask and you move the split; a `/25` would halve the range. That deeper mechanic is for a later room, but the one-line version is enough here: **the subnet mask is the ruler that marks where "network" ends and "host" begins in an IP address.**
 
 ## ARP — matching an IP to a hardware address
 
@@ -139,7 +163,7 @@ The genuine snag was **switch vs router** — the room's definitions didn't sepa
 - **Routing metrics** — how a router actually chooses among multiple paths (hops vs bandwidth vs delay), which the room raised but didn't answer.
 - **ARP spoofing and its defences** — Dynamic ARP Inspection, static entries — done properly.
 - **DHCP snooping** — the switch feature that blocks rogue DHCP servers; the concrete defence for the attack above.
-- **Subnet masks** — the actual mechanics of how the split is defined, beyond the "third octet" simplification.
+- **Subnet masks in depth** — the bit-level mechanics of moving the network/host split (e.g. what a `/25` or `/26` actually does), beyond the `/24` "third octet" case covered here.
 - **The token-ring priority question** — whether the send-priority rule has any real abuse angle once token-passing is accounted for.
 
 ## Lessons Learned
@@ -147,6 +171,7 @@ The genuine snag was **switch vs router** — the room's definitions didn't sepa
 - **Topologies differ by where failure is contained, not by having different weaknesses** — star dominates because it isolates per-device failures and concentrates the risk into one hardenable centre.
 - **A switch works inside one network; a router works between networks.** That single distinction resolves most of the confusion.
 - **Subnet reserved addresses:** `.0` is the network, `.255` is broadcast, so `.1–.254` are the 254 usable hosts — which explains the "254 devices" figure and the missing `.255`.
+- **The subnet mask marks where "network" ends and "host" begins** in an IP address — which is why only the last octet varies in a `/24`, and why a different third octet is a different network.
 - **Subnetting is the mechanism behind network segmentation** — the security benefit compliance frameworks expect for separating sensitive systems.
 - **The recurring pattern:** MAC, ARP and DHCP all establish identity by assertion with no verification — which is why spoofing, ARP poisoning and rogue-DHCP attacks all work. An unverified identifier is not a security control.
 
