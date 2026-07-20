@@ -40,7 +40,7 @@ I hadn't put it in those terms before: each number system is just a consequence 
 
 A question I had while working through this: is a **bit** a slot that could hold any character — 0–9, a–z, a symbol — or is it limited to 0 and 1?
 
-It's only ever 0 or 1, for the transistor reason above. A bit is defined as a single binary digit, and the physical thing storing it can only be in one of two states. The definition and the hardware are the same fact from two sides.
+It's only ever 0 or 1, for the transistor reason above. A bit is defined as a single binary digit, and the physical thing storing it can only be in one of two states. The definition and the hardware are the same fact from two perspectives.
 
 So how do we get letters, colours and emojis? We never store them in a single bit — we store them in **groups** of bits. That is the key point. One bit is trivially small, but the number of things you can represent grows quickly as you add bits:
 
@@ -52,16 +52,16 @@ Everything else in the room is this idea applied — first to colours, then to l
 
 ## Colour: grouping bits in practice
 
-Screen colour (light, not paint — they mix differently) is built from three primaries: **red, green, blue**.
+Screen colour (visual light, not paint pigments which mix differently) is built from three primaries: **red, green, blue**.
 
-- **The 8-colour version.** Give each of R, G, B a single on/off bit and you get 2 × 2 × 2 = 8 colours. `111` is all three on (white); `100` is red only. Three bits, eight colours.
+- **The 8-colour version.** Assign each of R, G, B a single bit to represent 2 states (on/off) and you get 2 × 2 × 2 = 8 colours. `111` is all three on (white); `100` is red only. Three bits, eight colours.
 - **The 16-million version.** One on/off bit per **primary** colour is too coarse. Instead, give each **primary** colour a whole **byte** (equal to 8 bits), so that each primary colour can hold **256 intensity levels** (= 2×2×2×2×2×2×2×2) instead of just on/off. Then 256 × 256 × 256 = 16,777,216 colours, which covers real-life needs.
 
-So a full-colour pixel is **3 bytes = 24 bits**. The room's example green comes out as `10100011 11101010 00101010`. That's correct but unreadable, which is the reason for the next idea.
+So a full-colour (16-million version) pixel uses 3 bytes (= 8 bits × 3 primary colours = 24 bits = 3 bytes). The room's example green comes out as `10100011 11101010 00101010`. That's correct but unreadable, which is the reason for the next idea.
 
 ## Hexadecimal: a shorter way to write bytes
 
-Twenty-four bits of `10100011 11101010 00101010` is accurate but hard to use. Hexadecimal fixes this by grouping **every 4 bits into a single hex digit** (0–9, then A–F for 10–15). Four bits have 16 possible patterns; a hex digit has 16 possible symbols; they line up one-to-one.
+Twenty-four bits of `10100011 11101010 00101010` is accurate but hard to use. Hexadecimal fixes this by grouping **every 4 bits into a single hex digit** (0–9, then A–F for 10–15). Four bits have 16 possible states (= 2×2×2×2); a hex digit has 16 possible symbols; they line up one-to-one.
 
 ```
 10100011  11101010  00101010    = 24 bits
@@ -75,13 +75,13 @@ Do that to the green above and you get `A3EA2A` — six hex digits for three byt
 - 1 byte (8 bits) = 2 hex digits
 - 3 bytes (24 bits) = 6 hex digits
 
-This is the point worth holding onto: hexadecimal is not a separate code layered over the data. Each pair of hex digits is one actual byte. When you read hex, you're reading the real bytes, written so a human can read them — not a translation of them. That is why security tools use hex so heavily (more below).
+This is the point worth holding onto. A **byte** (8 bits) is what the computer actually stores, but written out as `01001011` it's eight characters a human can't scan at a glance. **Hexadecimal is the shortest readable way to write that same byte:** `4B`, two characters instead of eight, with no loss — because 4 bits map exactly to one hex digit, one byte is always exactly two hex digits. So hex isn't a separate code layered over the data; it's the *same bytes*, written in the shortest form a human can actually read. That's why security tools display bytes as hex rather than as raw binary (more below).
 
 ## A general base-conversion formula
 
-I knew the mechanics; what I hadn't done was reduce them to one rule that covers every base. Worked out on paper, it's a single positional formula:
+I knew the mechanics; what I hadn't done was reduce them to one rule that covers every base. Worked out on paper, it's a single positional formula. A number quoted in a specific base can be converted to decimal format like this:
 
-> **each digit × (base ^ its position from the right, counting from 0), then sum**
+> each digit (in the number) × (base ^ position of the digit from the right, counting from 0), then sum
 
 Decimal, binary, hex and octal are the same procedure with a different base. Decimal's 213 is `2×10² + 1×10¹ + 3×10⁰`; binary and hex have the same structure, with 2 or 16 in place of the 10.
 
@@ -104,8 +104,6 @@ I can now answer it: yes, and it's the basis of a whole layer of malware detecti
 
 So the thing I was looking at as a teenager, without a framework for it, was the raw material of signature- and hash-based detection. The room's closing claim — that binary and hex fluency is a must in security — makes sense once you've seen this. You read hex in security for the same reason you read it for colour codes: it's the shortest way to see the actual bytes.
 
-(One light note on the compliance side: the password hashes I ran into while pulling apart a government risk-assessment workbook a while back were SHA-512 — long strings of hex. I can now say precisely what those were: a hex-written fingerprint of the original password's bytes. Same idea, different setting.)
-
 ## Where I got stuck
 
 Not stuck — I slowed down deliberately on the base-conversion formula, because I wanted to derive one general rule rather than memorise three special cases. That was time well spent. The rest was familiar ground told clearly.
@@ -119,7 +117,7 @@ Not stuck — I slowed down deliberately on the base-conversion formula, because
 ## Lessons Learned
 
 - **A bit is only ever 0 or 1** — that's the hardware (a transistor is on or off). Everything richer is built from groups of bits, never a single one.
-- **Hex is a short way to write bytes:** every byte is exactly two hex digits, so reading hex is reading the actual data.
+- **Hex is the readable form of a byte:** a byte is what's stored; hex is the shortest way to write it (one byte = two hex digits), so reading hex is reading the actual data.
 - **One formula covers every base:** digit × base^position, summed. Decimal, binary, hex and octal are the same procedure with a different base.
 - **This is why security uses hex:** hashes, signatures and hex dumps are all the real bytes of a file, written the shortest way — which is what a teenager with a hex editor was looking at without knowing it.
 
