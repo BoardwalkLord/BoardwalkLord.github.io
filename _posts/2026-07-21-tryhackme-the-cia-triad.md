@@ -1,7 +1,7 @@
 ---
 title: "TryHackMe: The CIA Triad — Learning Notes"
 description: "My notes on the CIA Triad room — confidentiality, integrity, availability, and the real mechanism that defends each one."
-date: 2026-07-21 16:00:00 +0800
+date: 2026-07-21 09:00:00 +0800
 categories: [Writeups, TryHackMe]
 tags: [fundamentals, cia-triad, confidentiality, integrity, availability, blue-team]
 toc: true
