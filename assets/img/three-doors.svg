@@ -13,6 +13,9 @@
     .floor  { stroke: #cbd5e1; stroke-width: 2; }
   </style>
 
+  <!-- opaque background panel: keeps the figure readable in dark mode -->
+  <rect x="0" y="0" width="760" height="400" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5" />
+
   <!-- floor line -->
   <line class="floor" x1="30" y1="300" x2="730" y2="300" />
 
