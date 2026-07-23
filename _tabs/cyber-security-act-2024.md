@@ -1,7 +1,7 @@
 ---
 layout: page
-title: "The Cyber Security Act 2024: What It Actually Means for Your Business"
-description: "Who the Cyber Security Act 2024 actually applies to in Malaysia, and how its obligations reach ordinary suppliers through contract clauses."
+title: "Cyber Security Act 2024 (Malaysia): What It Actually Means for Your Business"
+description: "Who the Cyber Security Act 2024 applies to in Malaysia, how NCII designation works, and how its obligations reach ordinary suppliers through contract clauses."
 permalink: /cyber-security-act-2024/
 icon: fas fa-compass
 order: 1
