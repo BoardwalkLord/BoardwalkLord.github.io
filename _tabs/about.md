@@ -1,6 +1,7 @@
 ---
 # the default layout is 'page'
 icon: fas fa-info-circle
+description: "Kenneth Wong — Malaysian cyber security compliance, written from the primary sources. Plain-language guidance on the Cyber Security Act 2024."
 order: 5
 ---
 
