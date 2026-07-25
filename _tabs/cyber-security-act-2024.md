@@ -28,16 +28,16 @@ Work out which of these three you are:
 | | Your situation | Go to |
 |---|---|---|
 | **1** | A designation letter arrived. You are an NCII entity. | **Door 1** |
-| **2** | No letter — but you supply, or want to supply, an organisation that received one. | **Door 2** |
+| **2** | No letter — but you supply, or want to supply, an organisation that received a designation letter. | **Door 2** |
 | **3** | Neither. | **Door 3** |
 
 ![Three doors: Door 1, you received a designation letter. Door 2, you supply an organisation that received one. Door 3, neither.](/assets/img/three-doors.svg)
 
 Door 2 is where most readers belong, and few realise it. Door 3 gets a straight answer, not a sales pitch.
 
-> **A note on data protection (the PDPA) — separate from everything below.**
+> **A note on data protection (the PDPA) — separate from the rest of this guide.**
 >
-> One law cuts across all three doors. The **Personal Data Protection Act (PDPA)** applies to almost any business that handles people's personal data in the course of commercial dealings — whichever door you are in, and whether or not any Cyber Security Act letter ever arrives. It is a different regime, with a different regulator (the Personal Data Protection Commissioner), and it is a separate specialism: a data-protection adviser or lawyer, not this guide.
+> One law cuts across all three doors. The **Personal Data Protection Act (PDPA)** applies to almost any business that handles people's personal data in the course of commercial dealings — whichever door you are in, and whether or not any Cyber Security Act letter ever arrives. It is a different regime, with a different regulator (the Personal Data Protection Commissioner), and it is a separate specialism — the province of data-protection consultants and specialised law firms, not this guide.
 >
 > The distinction in one line. The **Cyber Security Act** asks whether your critical *systems* are resilient and your NCII duties are met — and it applies only once you are *designated*. The **PDPA** asks whether you handle people's *data* lawfully — and it applies automatically, the moment you hold personal data. Different question, different regulator, different adviser.
 >
@@ -57,7 +57,7 @@ Being in a listed sector does not make you an NCII entity. It identifies the sec
 
 Look at one of the sectors on that list: "Trade, industry and economy." Almost every company in Malaysia is involved in trade or industry in some way. So if simply being in a listed sector made you regulated, nearly every company in the country would be regulated. That is obviously not what the Act was meant to do. The sector list tells you where a sector lead *may* designate. It does not tell you who *has been* designated.
 
-If someone tells you that you are "covered by the Act because you are in healthcare," they are either mistaken or selling you something. Ask them to show you the designation letter.
+If someone tells you that you are "covered by the Act because you are in healthcare," they are either mistaken or selling you something. Ask them to point you to your designation letter.
 
 ---
 
@@ -97,7 +97,7 @@ That is the real risk for most suppliers. Not failing a questionnaire — **fail
 
 **If you are a supplier, the Cyber Security Act 2024 does not make you legally answerable to NACSA.** The Act's duties sit on the designated entity. Nothing in it turns a supplier into a regulated party.
 
-**Your exposure is contractual, not statutory.** You owe these obligations to *your customer*, under the agreement you signed. They are enforced through the contract: indemnities, termination, non-renewal, and losing the account. If your revenue depends on that customer, contractual exposure is not a smaller risk. It is a different one, and it should be described accurately.
+**Your exposure is contractual, not statutory.** You owe these obligations to *your customer*, under the agreement you signed. They are enforced through the contract: indemnities, termination, non-renewal, and losing the account. If your revenue depends on that customer, contractual exposure is not a smaller risk. It is a different kind of risk — commercial and contractual, owed to your customer — and it should be named as that, not dressed up as a regulator at your door.
 
 ### What to do this week
 
@@ -212,13 +212,13 @@ You are not only exposed to a company fine. You are **personally deemed guilty**
 
 Then you are not in scope, and I am not going to suggest otherwise.
 
-You have no duties under the Cyber Security Act 2024. No risk assessment, no audit, no incident notification, no code of practice, no baseline. Nothing on the Door 1 clock applies to you. If a consultant tells you otherwise, ask them to point to the designation letter.
+You have no duties under the Cyber Security Act 2024. No risk assessment, no audit, no incident notification, no code of practice, no baseline. Nothing on the Door 1 clock applies to you. If a consultant tells you otherwise, ask them to point you to your designation letter.
 
 Two honest notes, and then you can get on with your day:
 
 **1. Door 2 can arrive without warning.** You are one large customer, or one contract renewal, away from picking up security obligations. Nothing urgent today, but it is worth knowing roughly what that involves before it happens.
 
-**2. None of this means your security does not matter.** It means it is not a *compliance* problem. Ransomware does not check whether you were designated.
+**2. None of this means your security does not matter.** It just means it isn't a *compliance* problem — but you still have to watch out for attacks; ransomware doesn't check whether you were designated.
 
 ---
 
@@ -228,7 +228,7 @@ Everything above comes from primary sources. These three points come from workin
 
 ### Choosing the right approach in the risk assessment toolkit
 
-NACSA publishes a free Excel toolkit for conducting the risk assessment. On the first screen it asks you to choose one of three approaches — **Asset-Based**, **Event-Based**, or **both** — and notes that the choice cannot be undone.
+Risk assessment is one of the recurring Door 1 duties — a designated entity must run one at least once a year — and its point is to surface the weaknesses an attacker could exploit, before they do. NACSA publishes a free Excel toolkit for conducting it. On the first screen it asks you to choose one of three approaches — **Asset-Based**, **Event-Based**, or **both** — and notes that the choice cannot be undone.
 
 **Choose "Asset Based and Event Based."**
 
@@ -274,7 +274,7 @@ Three levels, so you can see where the free work ends and paid work begins.
 
 ### Tier 1 — Do it yourself, free
 
-The three steps in Door 2 above, plus a **[self-assessment checklist](https://docs.google.com/forms/d/e/1FAIpQLSfijt0DFRinJWDfE4jEk7Qt8EsD1Io2cFuhav2YOvzMXAVu-A/viewform?usp=publish-editor)** you can download and work through on your own contracts. No payment, no obligation. Many businesses will find they are in reasonable shape and need nothing more.
+The three steps in Door 2 above, plus a **self-assessment checklist** you can download and work through on your own contracts. No payment, no obligation. Many businesses will find they are in reasonable shape and need nothing more.
 
 A self-assessment has one real limit, worth stating: it can tell you *whether you have a written policy*. It cannot tell you whether your "yes" would hold up when an auditor asks for proof, because you cannot objectively test your own evidence. That is where the paid work starts.
 
@@ -313,5 +313,3 @@ Where the law is genuinely unsettled, I have said so rather than guessed.
 **Kenneth Wong**
 kenneth@chuinwei.com
 23 July 2026
-
-
