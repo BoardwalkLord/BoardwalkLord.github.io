@@ -5,6 +5,7 @@ description: "Who the Cyber Security Act 2024 applies to in Malaysia, how NCII d
 permalink: /cyber-security-act-2024/
 icon: fas fa-compass
 order: 1
+published: false
 ---
 
 *A plain-language guide for Malaysian businesses. Written from the primary sources — the Act, the four regulations, and all ten of the Chief Executive's Directives.*
