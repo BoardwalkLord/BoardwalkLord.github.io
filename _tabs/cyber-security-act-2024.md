@@ -49,7 +49,7 @@ Being in a listed sector does not make you an NCII entity. It identifies the sec
 
 Look at one of the sectors on that list: "Trade, industry and economy." Almost every company in Malaysia is involved in trade or industry in some way. So if simply being in a listed sector made you regulated, nearly every company in the country would be regulated. That is obviously not what the Act was meant to do. The sector list tells you where a sector lead *may* designate. It does not tell you who *has been* designated.
 
-If someone tells you that you are "covered by the Act because you are in healthcare," they are either mistaken or selling you something. Ask them to show you the designation.
+If someone tells you that you are "covered by the Act because you are in healthcare," they are either mistaken or selling you something. Ask them to show you the designation letter.
 
 ---
 
@@ -97,7 +97,7 @@ Separately, and regardless of the Cyber Security Act, the **Personal Data Protec
 
 Three things you can do yourself, at no cost:
 
-1. **Find your most recent contract or renewal with your largest customers.** Look for sections headed Confidentiality, Personal Data Protection, Data Security, IT, Service Levels, Audit, or Compliance.
+1. **Find your most recent contract or renewal with an important customer** — start with the relationship you would least want to lose. (You cannot tell from the outside which organisations have been designated as NCII entities; that register is not public. So this is about where the consequences to *you* would be greatest, not about guessing who is designated.) Look for sections headed Confidentiality, Personal Data Protection, Data Security, IT, Service Levels, Audit, or Compliance.
 2. **Read what you have promised.** Look for phrases such as "appropriate technical and organisational measures," "shall comply with," "warrants that," "shall permit audit," and any notification deadline.
 3. **For each promise, ask the question that matters:** *if my customer audited me next month, could I prove it?*
 
@@ -119,19 +119,28 @@ Note what is **not** on that list. Risk assessments, gap analyses, policy work, 
 
 You are an NCII entity. A clock is running, and several of its deadlines are not in the Act itself.
 
-This is the most important thing to understand: **reading the Act is not a compliance programme.** The Act sets out the structure. The detailed duties are spread across four sets of regulations *and* ten Chief Executive's Directives (*Arahan Ketua Eksekutif*), which are not gazetted legislation but are binding, and which an auditor will check you against. Several of your duties appear **only** in the Directives.
+This is the most important thing to understand: **reading the Act by itself will not tell you what you have to do.** The Act sets out the structure — who can be designated, who enforces it, what the penalties are — but it deliberately leaves the operational detail to instruments made under it. Your actual duties are spread across three layers: the Act, four sets of regulations made under it, and ten Chief Executive's Directives (*Arahan Ketua Eksekutif*). The Directives are not gazetted legislation, but they are binding, and an auditor will check you against them. Several of your concrete duties — including the deadline to register your authorised persons, and exactly what a risk assessment must contain — appear **only** in the Directives, nowhere in the Act. So an organisation that reads only the Act, however carefully, will miss obligations it is nonetheless bound by.
 
 ### Your clock, from the date of designation
 
-| When | What |
-|---|---|
-| **Within 2 weeks** | Complete the National Cyber Security Baseline self-assessment *(Directive No. 4)* |
-| **Within 21 days** | Register **three authorised persons** with NC4 — one at management level, two at working level — by email to `ncii@nc4.gov.my`. Report any change within 7 days *(Directive No. 1)* |
-| **Every year** | Conduct a cyber security risk assessment |
-| **Every 2 years** | Undergo an audit by an auditor **approved by the Chief Executive** — approval sought at least 30 days before the audit |
-| **Within 30 days** of completing either | Submit the risk assessment report or audit report to the Chief Executive, copied to your sector lead |
-| **Within 30 days** of any material change to your NCII | Notify your sector lead |
-| **Ongoing** | Implement your sector's Code of Practice |
+The designation takes effect from the date stated in your letter (Directive No. 3). Everything below runs from that date.
+
+| When | What | Where it's set |
+|---|---|---|
+| **Within 2 weeks** | Complete the National Cyber Security Baseline self-assessment | Directive No. 4 |
+| **Within 21 days** | Register **three authorised persons** with NC4 — one at management level, two at working level — by email to `ncii@nc4.gov.my` | Directive No. 1 |
+| **Whenever an authorised person changes** | Report the change to NC4 **within 7 days** of it happening | Directive No. 1 |
+| **At least once a year** | Conduct a cyber security risk assessment | s.22(1)(a) + P.U.(A) 219 reg 3(a); method set by Directive No. 5 |
+| **At least once every 2 years** | Undergo an audit by an auditor **approved by the Chief Executive** (approval sought at least 30 days before it begins) | s.22(1)(b) + P.U.(A) 219 reg 3(b); method set by Directive No. 8 |
+| **Within 30 days** of finishing a risk assessment or audit | Submit the report to the Chief Executive, copied to your sector lead | s.22(2) |
+| **Within 30 days** of a material change to your NCII | Notify your sector lead | s.20 |
+| **Ongoing** | Implement your sector's Code of Practice | s.21 |
+
+**On "once a year" and "once every two years."** The regulations set a *frequency*, not a fixed calendar date. "At least once every two years" runs from your date of designation — so if you were designated in March, your first audit cycle is the two years from that March, and the audit must be completed within it. The report is then due within 30 days of the audit finishing. The safe reading is: don't treat these as "sometime in year two" — plan the engagement so it *finishes*, and the report is submitted, before the period ends.
+
+**On the authorised persons.** Within 21 days of designation you email `ncii@nc4.gov.my` with the details of your three nominated people (one management, two working level). After that, if you ever change one of them — someone leaves, or you swap who holds the role — you notify the same address within 7 days of that change. The reason this deadline matters more than it looks: only a registered authorised person can lawfully file an incident notification. If you haven't registered anyone, you have nobody who can report an incident when one happens.
+
+**What counts as a "material change."** The Act defines it as a change that affects, or may affect, the cyber security of your NCII or your ability to respond to a threat or incident (s.20(4)). In practice that includes things like a significant change to the design, configuration, security or operation of the system, or — at the extreme — losing ownership or control of the computer or system that performs the nationally-important function. If in doubt, the 30-day clock is short, so err towards notifying.
 
 ### If you have an incident
 
@@ -139,12 +148,16 @@ This is where published advice is most often wrong.
 
 **There is no 72-hour rule.** Several widely circulated Malaysian "compliance guides" state one. It appears to have been copied from the GDPR. It is not in the Act, the regulations, or any Directive.
 
-The actual sequence is much tighter:
+The actual sequence is much tighter.
 
-1. **Immediately**, once the incident comes to your knowledge — notify by email to **`cert@nc4.gov.my`**. Not "promptly." Immediately.
-2. **Within 6 hours** — submit the required particulars (incident type, description, severity, when it became known, how it was discovered) through the NC4 portal at `nc4.gov.my`.
-3. **Within 14 days** — submit supplementary information: what was affected, hosts involved, threat actor details, artefacts, tactics, impact, and action taken.
-4. **After that** — further updates as the Chief Executive requires.
+### Your clock, from the moment an incident comes to your knowledge
+
+| When | What | Where it's set |
+|---|---|---|
+| **Immediately** | Notify by email to **`cert@nc4.gov.my`** — not "promptly," immediately | P.U.(A) 220 reg 2(1); Directive No. 1 |
+| **Within 6 hours** | Submit the required particulars — incident type, description, severity, when it became known, how it was discovered — through the NC4 portal at `nc4.gov.my` | P.U.(A) 220 reg 2(2) |
+| **Within 14 days** | Submit supplementary information — what was affected, hosts involved, threat actor details, artefacts, tactics, impact, action taken | P.U.(A) 220 reg 2(3) |
+| **After that** | Further updates as the Chief Executive requires | P.U.(A) 220 reg 2(4) |
 
 If the NC4 system is unavailable, the fallback is by telephone (03-8064 4853 / 03-8064 4854) or email to the same address.
 
@@ -177,7 +190,7 @@ Some offences can be **compounded** — settled by payment, without prosecution,
 
 **The three heaviest offences are not on that list.** Failing to implement the code of practice (s.21(5)), failing to notify an incident (s.23(2)), and providing an unlicensed service (s.27(5)) cannot be settled by payment. They must go to court.
 
-A compounding offer must be made before prosecution starts, requires the written consent of the Public Prosecutor, and lapses 30 days after receipt unless extended.
+**What "compounding" means in plain terms.** Compounding is settling an offence by paying a sum of money instead of being prosecuted in court. For the six offences on the list, the Chief Executive may offer the offender the chance to pay a compound — up to half the maximum fine — and if the offender pays, no prosecution follows and there is no criminal conviction. The offer must be made before prosecution begins, requires the written consent of the Public Prosecutor, and lapses 30 days after it is received unless the time is extended. It is a way out for the lesser offences — but note again that the three heaviest offences are not eligible, so for those there is no paying your way out.
 
 ### Section 58 — personal liability
 
