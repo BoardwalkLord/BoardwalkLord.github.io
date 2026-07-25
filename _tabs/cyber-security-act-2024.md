@@ -274,7 +274,7 @@ Three levels, so you can see where the free work ends and paid work begins.
 
 ### Tier 1 — Do it yourself, free
 
-The three steps in Door 2 above, plus a **self-assessment checklist** you can download and work through on your own contracts. No payment, no obligation. Many businesses will find they are in reasonable shape and need nothing more.
+The three steps in Door 2 above, plus a **[self-assessment checklist](/checklist/)** you can download and work through on your own contracts. No payment, no obligation. Many businesses will find they are in reasonable shape and need nothing more.
 
 A self-assessment has one real limit, worth stating: it can tell you *whether you have a written policy*. It cannot tell you whether your "yes" would hold up when an auditor asks for proof, because you cannot objectively test your own evidence. That is where the paid work starts.
 
