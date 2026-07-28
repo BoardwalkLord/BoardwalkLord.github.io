@@ -138,15 +138,49 @@ Each type does the job it's good at — asymmetric handles the awkward first han
 
 The same pairing is what sits under HTTPS, VPNs, and encrypted messaging apps.
 
-## Lessons learned
+## Connects to my bigger goal
 
-- **What finally clicked:** framing asymmetric encryption as "two mathematically-linked keys," and — more usefully — seeing it as the specific answer to a *named* problem (key distribution). That turned the whole room from "here are two methods" into "here's a problem, and here's the fix," which is far stickier.
-- **Where I corrected myself:** I'd assumed that if an attacker can't *read* my encrypted data, they can't *change* it either. Wrong. Encryption buys **confidentiality**, not **integrity** — someone can still tamper with ciphertext (flip bits, cut it short, replay it) without ever reading it, and with some ciphers those changes land predictably on the decrypted result. Knowing a message *wasn't* altered is a separate guarantee, from a message authentication code / authenticated encryption. TLS carries both, which is a chunk of why the padlock means more than "it's scrambled."
-  {: .prompt-warning }
-- **A second thing I had to fix:** the hard maths only runs one way — deriving the private key from the public one is the infeasible direction; the reverse is much easier and is simply how the pair is made.
-- **The question I chased past the room:** *why* the CA list is trustworthy at all (see above). Short of it: the trust lives with the browser/OS vendor and is earned through audits, not automatic.
-- **To revisit:** the room skips all the internals on purpose, and I want to come back to how AES actually mixes a block, the real maths behind RSA/ECC key generation, digital signatures done properly, and certificate **revocation** — how a browser finds out a certificate was pulled *before* its printed expiry.
-- **Also to revisit — where the real attacks live:** the maths itself is the strong part; the soft targets are the *trust anchors* of the certificate chain. CA mis-issuance, Certificate Transparency logs as the detection layer, and the integrity of the browser's own trust store are the actual attack surface, not the cipher. One to dig into properly.
+The reason I'm working through these rooms is to be able to sit across from a business owner and turn this material into advice. This room handed me a good exercise for that: trace the whole chain behind the padlock, then think like the person whose job is to ask where it breaks.
+
+The chain, start to finish:
+
+1. A website generates a key pair and asks a **Certificate Authority** to vouch for its public key. The CA checks the applicant really controls the domain, then signs a **certificate** binding that public key to that website — signing with the CA's own private key.
+2. The website installs the certificate and serves it to any browser that connects.
+3. My browser requests the site, and the site presents its certificate.
+4. My browser verifies the CA's signature on it — using the CA's public key, which already shipped in the browser's trusted-root store — and checks the certificate hasn't expired or been revoked.
+5. Satisfied the public key genuinely belongs to the site, browser and server use asymmetric encryption to agree a shared symmetric key, then switch to fast symmetric encryption for the session.
+6. The **padlock** appears, and the page flows across encrypted.
+
+Now the adviser's question. The encryption itself is the strong part — nobody is breaking the maths. So where *would* an attacker actually go? Walking each link:
+
+- **The CA is tricked or breached.** Any trusted CA can vouch for any domain, so the system is only as strong as its weakest CA. Compromise one — or socially-engineer a careless one — and you walk away with a *validly signed* certificate for a domain you don't own, which is roughly the shape of the DigiNotar breach. The defences worth knowing a client's exposure to: Certificate Transparency (every certificate logged publicly, so a domain owner can spot one they never asked for) and CAA records (a DNS entry naming which CAs are even allowed to issue for you).
+- **The domain-control check is subverted.** The CA proves you own a domain through an automated DNS or HTTP challenge. An attacker who can hijack DNS or routing *during* that check can pass it and be handed a legitimate certificate — the trust broke upstream of the crypto entirely.
+- **The site's own private key is stolen.** Then the attacker cryptographically *is* the site, no CA trickery required. Heartbleed leaked exactly this kind of key straight out of server memory.
+- **The client's trust store is poisoned.** Slip a rogue root certificate onto someone's machine and every forged certificate looks valid to them. Lenovo shipped laptops in that state (Superfish); corporate proxies do it on purpose.
+- **The connection is stripped before HTTPS begins.** If the first request leaves as plain `http`, a man-in-the-middle can hold it there. The fix is HSTS — the site telling browsers to only ever connect over HTTPS.
+
+What this gives me for client work is the move from "you've got a padlock, you're fine" to a proper set of questions: where does the private key live and who can reach it, is the domain locked to specific CAs, is HSTS switched on, is anyone watching the transparency logs for mis-issued certificates. None of it is exotic — it's just knowing the chain well enough to find the weak link, rather than pointing at the padlock and calling it done.
+
+## Where I got stuck
+
+Two spots, both my own assumptions rather than the room being unclear:
+
+- **I assumed encryption also prevents tampering.** My instinct was that if an attacker can't *read* something, they can't *change* it either. Wrong — scrambling data protects confidentiality, not integrity. Ciphertext can still be altered in transit; knowing that it *wasn't* is a separate guarantee (a message authentication code / authenticated encryption), and it's one of the jobs TLS quietly does on top of the encryption.
+- **I tried to reverse ECC with plain division.** Seeing the public key written `P = k × G`, I reached for `k = P ÷ G`. It doesn't work, and seeing *why* was the valuable part: that `×` isn't ordinary multiplication and `G`, `P` aren't numbers — they're points on a curve, and you can't divide one point by another. The one-way-ness is built into the operation itself.
+
+## Revisit
+
+- **The internals the room skips** — how AES actually mixes a block, the real maths behind RSA/ECC key generation, and digital signatures done properly.
+- **Certificate revocation** — how a browser learns a certificate was pulled *before* its printed expiry (the mechanics behind the "not revoked" check in the chain above).
+- **Where the real attacks live** — the trust anchors of the certificate chain (CA mis-issuance, Certificate Transparency, trust-store integrity) look like the actual attack surface, not the cipher. Worth studying as a topic in its own right.
+
+## Lessons Learned
+
+- **The algorithm is public; only the key is secret.** Security doesn't come from hiding how the cipher works — ciphers like AES are published openly — it comes entirely from protecting the key.
+- **Asymmetric encryption is the answer to a named problem.** Symmetric encryption can't solve *getting the shared key to the other side* — the key distribution problem — and a public/private pair is precisely what removes the need to share a secret in advance.
+- **Encryption ≠ integrity.** Keeping data secret and proving it wasn't altered are two different guarantees from two different mechanisms.
+- **Real systems are hybrid.** Asymmetric handles the awkward key handover, symmetric does the fast bulk work — and that combination is what runs behind every padlock.
+- **The trust, not the maths, is the soft spot.** The cipher is the strong link; certificates, CAs, and trust stores are where security actually stands or falls.
 
 ## References
 
