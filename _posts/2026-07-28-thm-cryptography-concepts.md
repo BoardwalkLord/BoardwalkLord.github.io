@@ -153,15 +153,7 @@ The chain, start to finish:
 5. Satisfied the public key genuinely belongs to the site, browser and server use asymmetric encryption to agree a shared symmetric key, then switch to fast symmetric encryption for the session.
 6. The **padlock** appears, and the page flows across encrypted.
 
-Now the adviser's question. The encryption itself is the strong part — nobody is breaking the maths. So where *would* an attacker actually go? Walking each link:
-
-- **The CA is tricked or breached.** Any trusted CA can vouch for any domain, so the system is only as strong as its weakest CA. Compromise one — or socially-engineer a careless one — and you walk away with a *validly signed* certificate for a domain you don't own, which is roughly the shape of the DigiNotar breach. The defences worth knowing a client's exposure to: Certificate Transparency (every certificate logged publicly, so a domain owner can spot one they never asked for) and CAA records (a DNS entry naming which CAs are even allowed to issue for you).
-- **The domain-control check is subverted.** The CA proves you own a domain through an automated DNS or HTTP challenge. An attacker who can hijack DNS or routing *during* that check can pass it and be handed a legitimate certificate — the trust broke upstream of the crypto entirely.
-- **The site's own private key is stolen.** Then the attacker cryptographically *is* the site, no CA trickery required. Heartbleed leaked exactly this kind of key straight out of server memory.
-- **The client's trust store is poisoned.** Slip a rogue root certificate onto someone's machine and every forged certificate looks valid to them. Lenovo shipped laptops in that state (Superfish); corporate proxies do it on purpose.
-- **The connection is stripped before HTTPS begins.** If the first request leaves as plain `http`, a man-in-the-middle can hold it there. The fix is HSTS — the site telling browsers to only ever connect over HTTPS.
-
-What this gives me for client work is the move from "you've got a padlock, you're fine" to a proper set of questions: where does the private key live and who can reach it, is the domain locked to specific CAs, is HSTS switched on, is anyone watching the transparency logs for mis-issued certificates. None of it is exotic — it's just knowing the chain well enough to find the weak link, rather than pointing at the padlock and calling it done.
+The insight I took from laying it out like this: the encryption itself is the strong part — nobody is breaking the maths. If something goes wrong, it goes wrong at one of the *trust* links around the crypto: the CA doing the vouching, the check that proves domain control, the private key sitting on the server, and the trusted-root store in the browser. For advising a client, that reframes the whole job — the useful questions aren't about the cipher, they're about those links, and the move I want to be able to make is from "you've got a padlock, you're fine" to "let's look at where this chain could actually give way." The specific ways each of those links gets attacked were new to me in working through this, so I've parked them in Revisit to study properly rather than pretend I've got them down.
 
 ## Where I got stuck
 
@@ -174,7 +166,12 @@ Two spots, both my own assumptions rather than the room being unclear:
 
 - **The internals the room skips** — how AES actually mixes a block, the real maths behind RSA/ECC key generation, and digital signatures done properly.
 - **Certificate revocation** — how a browser learns a certificate was pulled *before* its printed expiry (the mechanics behind the "not revoked" check in the chain above).
-- **Where the real attacks live** — the trust anchors of the certificate chain (CA mis-issuance, Certificate Transparency, trust-store integrity) look like the actual attack surface, not the cipher. Worth studying as a topic in its own right.
+- **How each trust link in the chain gets attacked** — the maths is the strong part; the trust links around it are the real attack surface, and I want to study each one properly:
+  - **CA breach or mis-issuance** — any trusted CA can vouch for any domain, so compromising or fooling one yields a validly-signed certificate for a domain you don't own (the shape of the DigiNotar breach). Defences to understand: Certificate Transparency (every certificate logged publicly) and CAA records (naming which CAs may issue for a domain).
+  - **Domain-control subversion** — hijacking DNS or routing *during* the CA's ownership challenge to be handed a legitimate certificate.
+  - **Server private-key theft** — steal the key and you cryptographically *are* the site; Heartbleed leaked exactly this out of server memory.
+  - **Trust-store poisoning** — a rogue root certificate on a machine makes forged certificates look valid (Lenovo's Superfish; corporate proxies do it deliberately).
+  - **Stripping HTTPS before it starts** — forcing the connection to stay on plain `http`; the defence is HSTS.
 
 ## Lessons Learned
 
