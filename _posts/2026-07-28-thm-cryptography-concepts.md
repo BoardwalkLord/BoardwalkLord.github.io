@@ -1,7 +1,7 @@
 ---
 title: "TryHackMe: Cryptography Concepts — Learning Notes"
 description: "My notes on the Cryptography Concepts room — plaintext vs ciphertext, symmetric vs asymmetric encryption, certificates, and how they combine to power HTTPS."
-date: 2026-07-28 09:00:00 +0800
+date: 2026-07-28 08:00:00 +0800
 categories: [Writeups, TryHackMe]
 tags: [cryptography, encryption, symmetric, asymmetric, tls]
 toc: true
@@ -10,15 +10,18 @@ comments: true
 
 {% comment %}
   Self-reminder block unchanged — see _template.md. Own words, no flags/answers,
-  no reproduced THM content, learning-notes framing, no commercial pitch.
+  no lab drag-drop answers, no reproduced THM content, learning-notes framing, no commercial pitch.
 {% endcomment %}
 
 > These are my personal learning notes as I work through TryHackMe — honest notes, not an authoritative guide. Corrections welcome.
 {: .prompt-info }
 
+> **On sources & TryHackMe's material:** These are independent learning notes in my own words. They describe *my* experience of the room and deliberately reproduce none of TryHackMe's room text, task content, screenshots, flags, or answers — go do the room to get those. Room names and the linked URL are used for reference only. TryHackMe and its content are the property of TryHackMe Ltd; this post is not affiliated with, authorised by, or endorsed by them.
+{: .prompt-tip }
+
 ## Overview
 
-- **Room:** [Cryptography Concepts](https://tryhackme.com/room/cryptographyconcepts)
+- **Room:** Cryptography Concepts — [link](https://tryhackme.com/room/cryptographyconcepts)
 - **Difficulty:** Easy
 - **What it teaches:** The core vocabulary of encryption, the split between symmetric and asymmetric approaches, and why every secure website ends up using both at once.
 
@@ -76,29 +79,24 @@ This is the fix, and it's the part that actually landed for me. I'd read about a
 - a **public key**, which you're free to hand to anyone, and
 - a **private key**, which stays with exactly one person.
 
-The link runs in both directions:
+The link runs in both directions, and each direction has a plain physical picture to go with it.
 
-- lock something with a **public** key and *only* its paired **private** key can open it — that's how you send a secret *to* someone;
-- lock something with your **private** key and anyone holding your **public** key can open it — which sounds pointless until you realise it *proves the message came from you*. The physical version is a **wax seal**: only your signet ring can press it, but anyone who recognises your seal can confirm a letter is genuinely yours, and nobody can forge it without the ring. That's the basis of digital signatures, which this room flags but leaves for another day.
+**Public key locks, private key opens** — this is how you send a secret *to* someone. Picture a **postbox on a street corner**: the slot you drop letters into is the public key, open to any passer-by; the locked hatch the owner opens to collect the post is the private key, held by one person only. Alice looks up Bob's public key (he can put it on his website — it was never meant to be hidden), encrypts her message with it, and sends it. An attacker who knows exactly where the postbox is still can't get inside; they don't hold Bob's private key. Bob opens the hatch with his and reads it.
 
-What keeps it safe is the direction of the difficulty. The pair is bound by heavy maths, and working out the private key *from* the public one would tie up an ordinary computer for an impractical length of time. One thing I had to get straight for myself: that hardness only runs one way. The **public → private** direction is the infeasible one; the reverse is much easier, because producing the public key *from* the private key is just part of generating the pair.
+**Private key locks, public key opens** — this one sounds pointless at first, until you realise it *proves the message came from you*. The physical version is a **wax seal**: only your signet ring can press it, but anyone who recognises your seal can confirm a letter is genuinely yours, and nobody can forge it without the ring. That's the basis of digital signatures, which this room flags but leaves for another day.
 
-### Aside: why only one direction is hard
+The first of those two directions is what cracks the earlier problem. **No shared secret ever had to travel across the network beforehand** — the only key that went out in the open was Bob's public one, which was never secret anyway. Key distribution problem solved: anyone can be a sender, only the recipient can decrypt.
 
-Both of the common asymmetric schemes rest on a *trapdoor* function — something easy to run forwards but hard to reverse, unless you hold a secret shortcut, which is what the private key is. **RSA** is the classic: it multiplies two large prime numbers together, which is quick, but handed only the result you'd have to split it back into those primes, and there's no known fast way to do that — so for big enough numbers the search outlasts any practical timescale. The two primes are the private side; their product is the public side.
+What keeps it all safe is the direction of the difficulty. The pair is bound by heavy maths, and working out the private key *from* the public one would tie up an ordinary computer for an impractical length of time. That hardness only runs one way: the **public → private** direction is the infeasible one, while the reverse is much easier and is just part of generating the pair.
 
-**ECC** (elliptic-curve cryptography) leans on a different lopsided operation: repeatedly "adding" a point to itself along a curve. Going forwards — adding it to itself some number of times — is fast; working out *how many times* it was added, given only the start and end points, is the hard direction, again with no known shortcut. In both schemes the forward step is a direct calculation and the reverse is a search nobody has found a quick route through, and that gap is the whole source of the one-way difficulty.
-
-### The mailbox analogy
-
-A postbox on a street corner:
-
-- the **slot** you post letters into is the **public key** — open to any passer-by, no secret about it;
-- the **locked hatch** the owner opens to collect the post is the **private key** — one keyholder, and that's it.
-
-So Alice looks up Bob's public key (he can stick it on his website — it was never meant to be hidden), encrypts her message with it, and sends it off. An attacker who knows precisely where the postbox is still can't get inside; they don't hold Bob's private key. Bob opens the hatch with his and reads it.
-
-And that's the point of the whole thing: **no shared secret ever had to travel across the network beforehand.** The only key that went out in the open was Bob's public one, which was never secret anyway. Key distribution problem solved — anyone can be a sender, only the recipient can decrypt.
+> **Aside — a step off the main track: why only one direction is hard.**
+>
+> Both of the common asymmetric schemes rest on a *trapdoor* function — something easy to run forwards but hard to reverse, unless you hold a secret shortcut, which is what the private key is. We have two examples of real-world trapdoor functions: RSA and ECC.
+>
+> **RSA** is the classic. Pick two large prime numbers, call them `p` and `q`, and multiply them together: `n = p × q`. Going forwards — `p` and `q` in, `n` out — is quick. Going backwards — handed only `n` and asked to recover `p` and `q` — has no known fast method, so for big enough numbers that search outlasts any practical timescale. The pair `(p, q)` is effectively the private side; `n` is public. (In full RSA you also derive a public exponent `e` and a private exponent `d` from those primes, then encrypt a message with `c = m^e mod n` and decrypt it with `m = c^d mod n` — but the security still rests entirely on `n` being hard to factor.)
+>
+> **ECC** (elliptic-curve cryptography) uses a different lopsided operation. Fix a starting point `G` on a curve, and let the private key be a whole number `k`. The public key is the point you land on after adding `G` to itself `k` times: `P = k × G`. Forwards — `k` and `G` in, `P` out — is fast even for an enormous `k`. Backwards — given `P` and `G`, work out *how many hops* `k` it took — is the hard direction, with no known shortcut. So `P = k × G` is easy to compute, but recovering `k` from `P` and `G` is infeasible. In both schemes the forward step is a direct calculation and the reverse is a search nobody has found a quick route through, and that gap is the whole source of the one-way difficulty.
+{: .prompt-info }
 
 ## Certificates and Certificate Authorities
 
@@ -107,7 +105,7 @@ That solution raises its own question straight away: how does Alice know the pub
 Two pieces answer it, and they're easy to run together, so worth pulling apart:
 
 - a **certificate** is the digital document itself — it carries a public key *and* a claim about which website owns it (say, `example.com`);
-- a **Certificate Authority (CA)** is the trusted outside party that puts its signature on that document, vouching that the key and the owner really do go together.
+- a **Certificate Authority (CA)** is the trusted outside party that puts its signature on that document, vouching that the public key and the website really do go together.
 
 My browser and OS arrive with a set of CAs they already trust. When a site presents its certificate, the browser checks a trusted CA signed it and that it hasn't expired or been pulled. All good → I get the padlock. Something wrong — out of date, or signed by somebody the browser doesn't recognise — and I get a warning instead. You can see this yourself: click the padlock on any HTTPS site and the certificate details show who it was issued *to*, which CA issued it, and the dates it's valid between.
 
@@ -146,6 +144,7 @@ The same pairing is what sits under HTTPS, VPNs, and encrypted messaging apps.
 - **A second thing I had to fix:** the hard maths only runs one way — deriving the private key from the public one is the infeasible direction; the reverse is much easier and is simply how the pair is made.
 - **The question I chased past the room:** *why* the CA list is trustworthy at all (see above). Short of it: the trust lives with the browser/OS vendor and is earned through audits, not automatic.
 - **To revisit:** the room skips all the internals on purpose, and I want to come back to how AES actually mixes a block, the real maths behind RSA/ECC key generation, digital signatures done properly, and certificate **revocation** — how a browser finds out a certificate was pulled *before* its printed expiry.
+- **Also to revisit — where the real attacks live:** the maths itself is the strong part; the soft targets are the *trust anchors* of the certificate chain. CA mis-issuance, Certificate Transparency logs as the detection layer, and the integrity of the browser's own trust store are the actual attack surface, not the cipher. One to dig into properly.
 
 ## References
 
