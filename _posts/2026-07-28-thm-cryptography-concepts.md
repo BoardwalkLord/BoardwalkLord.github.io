@@ -1,7 +1,7 @@
 ---
 title: "TryHackMe: Cryptography Concepts — Learning Notes"
 description: "My notes on the Cryptography Concepts room — plaintext vs ciphertext, symmetric vs asymmetric encryption, certificates, and how they combine to power HTTPS."
-date: 2026-07-28 08:00:00 +0800
+date: 2026-07-28 09:00:00 +0800
 categories: [Writeups, TryHackMe]
 tags: [cryptography, encryption, symmetric, asymmetric, tls]
 toc: true
