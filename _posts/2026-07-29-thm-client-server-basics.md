@@ -44,7 +44,7 @@ The room builds this through Luigi's pizza takeaway. Reading it the smooth way �
 | The server replies with a status line in the response header — `200 OK` | The staff acknowledge the order and get to work |
 | The server sends the response body — the page's HTML | Bob carries the finished pizza home |
 
-One place the analogy quietly diverges: Bob makes two trips, but in HTTP the header (`200 OK`) and the body come back as a *single* response — status line first, then the content, in one stream.
+A small clarification on the last two rows: the `200 OK` and the HTML aren't two separate replies. They're the two parts of a single HTTP response — the status line at the top of the response header, the body straight after — sent together in one stream. Splitting them across two rows just mirrors how the room separates the "response header" from the "response body."
 
 The room's second half lets you watch the last three rows happen for real: open Firefox DevTools, reload the page, and the Network tab lists the GET requests, each showing the scheme, host, filename (`/`, which resolves to `index.html`), the address, and the `200 OK` status, with the returned HTML under the Response tab. This part is the practical face of what HTTP in Detail already covered.
 
