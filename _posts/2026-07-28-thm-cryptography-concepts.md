@@ -1,7 +1,7 @@
 ---
 title: "TryHackMe: Cryptography Concepts — Learning Notes"
 description: "My notes on the Cryptography Concepts room — plaintext vs ciphertext, symmetric vs asymmetric encryption, certificates, and how they combine to power HTTPS."
-date: 2026-07-28 09:00:00 +0800
+date: 2026-07-28 08:00:00 +0800
 categories: [Writeups, TryHackMe]
 tags: [cryptography, encryption, symmetric, asymmetric, tls]
 toc: true
@@ -25,161 +25,91 @@ comments: true
 - **Difficulty:** Easy
 - **What it teaches:** The core vocabulary of encryption, the split between symmetric and asymmetric approaches, and why every secure website ends up using both at once.
 
-This is a *concepts* room — no target machine, no `nmap`, just ideas built up through analogies and one small hands-on cipher exercise. It follows on from the CIA Triad and Data Encoding rooms, and it builds everything around a scenario I happen to know from the inside: a clinic that has to push patient files out to specialists and insurers across the open internet. The biggest thing I walked away with wasn't the encryption itself — I'd met most of that before — but a dent in my own mental model: **scrambling data keeps it secret, but that alone does not stop someone tampering with it.** I'll come back to that at the end.
+This is a *concepts* room — no target machine, just ideas built through analogies and one small cipher exercise, following the CIA Triad and Data Encoding rooms. It frames everything around a scenario I know from the inside: a clinic pushing patient files out to specialists and insurers over the open internet. My biggest takeaway wasn't the encryption — I'd met most of it — but a correction to my own model: **scrambling data keeps it secret, but that alone doesn't stop someone tampering with it.**
 
-## Why cryptography matters (and the padlock question)
+## Why cryptography matters (the padlock)
 
-The room opens by asking what the padlock in your address bar is actually doing for you.
+The padlock signals **TLS** (Transport Layer Security — the layer that turns `http` into `https`). Two things happen to the data. For **confidentiality**, it's encrypted into unreadable junk, crosses the network that way, and is only decrypted into a readable message at my browser. For **integrity**, TLS also attaches a tamper-check, so any change in transit is detected and rejected. Drop the *s* and a man-in-the-middle can both read the traffic and rewrite it.
 
-My answer going in: the padlock signals **TLS** (Transport Layer Security — the layer that turns `http` into `https`). Whatever leaves the server is encrypted into unreadable junk, crosses the network in that state, and is only turned back into something my browser can use once it arrives. Strip the *s* and you have plain `http`: someone sitting on the path between the server and me can not only read the traffic but rewrite it on the way through.
+## Symmetric encryption: one shared secret
 
-That lines up with the CIA Triad from last room. Encryption is the main tool behind two of the three pillars:
-
-- **Confidentiality** — turn it into junk so only the intended reader can recover it.
-- **Integrity** — be able to tell if anyone altered it in transit.
-- Availability is the third pillar, but it's more about keeping systems accessible than about cryptography.
-
-The reason any of this is needed: traffic almost never runs point-to-point. It hops across a chain of machines you don't control, and each hop is a spot where an unprotected message could be read, changed, or dropped. Encryption closes that off by locking the content behind a secret that the eavesdroppers don't hold.
-
-## Symmetric encryption: one secret, shared both ways
-
-**Answering the opening question with a physical object:** picture a lockbox and two keys cut to the same shape. Person A drops a note inside and locks it. The box makes its way to Person B, and for the whole trip nobody along the route can get it open. Person B receives it, turns their matching key, and reads the note.
-
-That's symmetric encryption in one line: **the same key that locks it is the one that unlocks it.**
-
-Rereading the task, the thing worth nailing down is how the box maps onto the text-world terms:
+Picture a lockbox and two identical keys. Person A drops a note in, locks it, and sends it; for the whole trip nobody along the route can open it; Person B unlocks it with a matching key. **The same key locks and unlocks.** The mapping to the text world:
 
 | Term | In the lockbox | What it is |
 |---|---|---|
-| **Plaintext** | The note inside | The message as you'd read it (`HELLO`) |
-| **Ciphertext** | The locked box mid-journey | The scrambled form (`KHOOR`) — ideally indistinguishable from noise |
-| **Algorithm** | The mechanism of the lock | The publicly-known method; watching someone turn a key gives nothing away |
-| **Key** | The exact cut of the key | The secret; only the right cut moves the lock |
+| **Plaintext** | The note | The readable message (`HELLO`) |
+| **Ciphertext** | The locked box in transit | The scrambled form (`KHOOR`) |
+| **Algorithm** | How the lock works | The public method |
+| **Key** | The exact cut of the key | The secret |
 
-The analogy holds up well, and it drives home the point that trips people up: **the method is public, the key is what's secret.** You don't keep the design of a padlock hidden to make it safe — its safety comes from you being the only one with the key. Encryption works the same way round. A **cipher** — the specific recipe that turns plaintext into ciphertext and back again — is published openly rather than hidden; AES, the one most systems use, has been picked apart by researchers everywhere, and none of that weakens it, because the secrecy lives entirely in the key.
+The point that trips people up: **the method is public, only the key is secret.** You don't hide how a padlock works to make it safe. A **cipher** — the recipe that turns plaintext into ciphertext and back — is published openly; AES, the common one, is picked apart worldwide, and none of that weakens it, because the secrecy lives in the key.
 
-### The Caesar cipher
+### The Caesar cipher and the game
 
-To make it concrete the room reaches for the Caesar cipher: pick a number, and slide every letter that many places along the alphabet. That number *is* the key. With a key of 3, `A` lands on `D`, and the far end wraps around so `Z` comes back to `C`. Decrypting is the same move in reverse.
+The room's toy example: slide every letter a fixed number of places, and that number is the key (`A`→`D` at key 3, wrapping at the end so `Z`→`C`). Useless for real security — only 25 shifts to try — but it shows the pattern `algorithm + key + plaintext → ciphertext`. The task ends in a small browser game built on the same shift.
 
-It's useless for anything real — there are only 25 possible shifts, so a machine simply tries them all and reads the message off in the blink of an eye. It earns its place here purely as a clear example of the pattern `algorithm + key + plaintext → ciphertext`. Serious ciphers keep that exact shape and just make the reversing step impractically hard without the key.
+## The key distribution problem
 
-The task closes with a small in-browser exercise where you play a team on a monitored network, sliding the shift value to read intercepted Caesar messages and to prepare replies. It's a nice way to *feel* the key-and-algorithm split rather than just read about it.
-
-## The catch: the key distribution problem
-
-Here's where I had to stop and think. Symmetric encryption is quick and it handles bulk data happily — but it assumes both sides already share the secret key. So: **how does that key get from one person to the other in the first place?**
-
-Send it across the network as-is and any eavesdropper simply pockets it, then reads everything from then on. Encrypt the key before sending? Now you need a *second* key to protect the first one — and a third to protect that — with no end in sight. This problem has a name, the **key distribution problem**, and it's the reason symmetric encryption can't stand entirely on its own.
+Symmetric encryption assumes both sides already share the key. **How does that key get across in the first place?** Send it in the clear and an eavesdropper pockets it; encrypt it and you need another key to protect *that*, with no end. This is the **key distribution problem**, and it's why symmetric encryption can't stand alone.
 
 ## Asymmetric encryption: a linked pair of keys
 
-This is the fix, and it's the part that actually landed for me. I'd read about asymmetric encryption before, but the phrase **"two mathematically-linked keys"** is what finally made it click:
+The fix — and the phrase that made it click for me: **two mathematically-linked keys**, a **public key** anyone can hold and a **private key** kept by one person. The link runs both ways, each with a physical picture.
 
-- a **public key**, which you're free to hand to anyone, and
-- a **private key**, which stays with exactly one person.
+**Public locks, private opens** — sending a message *to* someone. Think of a **street postbox**: the slot is the public key (anyone can post), the locked hatch is the private key (one keyholder). Alice encrypts her message with Bob's public key; an attacker who knows exactly where the postbox is still can't open it to read Alice's message; only Bob's private key does.
 
-The link runs in both directions, and each direction has a plain physical picture to go with it.
+**Private locks, public opens** — this *proves the message came from you*. You lock with your private key; anyone can unlock with your public key, and since only your private key could lock it, that proves you sent it. The physical version is a **wax seal**: only your signet ring presses it, but anyone who knows your seal can confirm the letter is yours, and nobody can forge it without the ring. That's the basis of digital signatures, which the room flags but leaves for later.
 
-**Public key locks, private key opens** — this is how you send a secret *to* someone. Picture a **postbox on a street corner**: the slot you drop letters into is the public key, open to any passer-by; the locked hatch the owner opens to collect the post is the private key, held by one person only. Alice looks up Bob's public key (he can put it on his website — it was never meant to be hidden), encrypts her message with it, and sends it. An attacker who knows exactly where the postbox is still can't get inside; they don't hold Bob's private key. Bob opens the hatch with his and reads it.
-
-**Private key locks, public key opens** — this one sounds pointless at first, until you realise it *proves the message came from you*. The physical version is a **wax seal**: only your signet ring can press it, but anyone who recognises your seal can confirm a letter is genuinely yours, and nobody can forge it without the ring. That's the basis of digital signatures, which this room flags but leaves for another day.
-
-The first of those two directions is what cracks the earlier problem. **No shared secret ever had to travel across the network beforehand** — the only key that went out in the open was Bob's public one, which was never secret anyway. Key distribution problem solved: anyone can be a sender, only the recipient can decrypt.
-
-What keeps it all safe is the direction of the difficulty. The pair is bound by heavy maths, and working out the private key *from* the public one would tie up an ordinary computer for an impractical length of time. That hardness only runs one way: the **public → private** direction is the infeasible one, while the reverse is much easier and is just part of generating the pair.
+The first direction cracks the earlier problem: **no shared secret ever had to travel beforehand** — the only key in the open was Bob's public one, which was never secret. What keeps it safe is that working out the private key *from* the public one would tie up an ordinary computer for an impractical length of time; the reverse is much easier, and is just how the pair gets made.
 
 > **Aside — a step off the main track: why only one direction is hard.**
 >
-> Both of the common asymmetric schemes rest on a *trapdoor* function — something easy to run forwards but hard to reverse, unless you hold a secret shortcut, which is what the private key is. We have two examples of real-world trapdoor functions: RSA and ECC.
->
-> **RSA** is the classic. Pick two large prime numbers, call them `p` and `q`, and multiply them together: `n = p × q`. Going forwards — `p` and `q` in, `n` out — is quick. Going backwards — handed only `n` and asked to recover `p` and `q` — has no known fast method (you're missing *both* factors, so there's nothing to divide `n` by), so for big enough numbers that search outlasts any practical timescale. The pair `(p, q)` is effectively the private side; `n` is public. (In full RSA you also derive a public exponent `e` and a private exponent `d` from those primes, then encrypt a message with `c = m^e mod n` and decrypt it with `m = c^d mod n` — but the security still rests entirely on `n` being hard to factor.)
->
-> **ECC** (elliptic-curve cryptography) uses a different lopsided operation. Fix a starting point `G` on a curve, and let the private key be a whole number `k`. The public key is the point you land on after adding `G` to itself `k` times: `P = k × G`. The catch that trips everyone up: that `×` is *not* ordinary multiplication, and `G` and `P` aren't numbers — they're *points* on the curve, so `k × G` means "apply the curve's own addition rule to `G`, `k` times over." Forwards — `k` and `G` in, `P` out — is fast even for an enormous `k`. But backwards you can't just compute `k = P ÷ G`, because dividing one point by another isn't a thing that exists; the only route to `k` is to keep adding `G` and count the hops until you reach `P`, which is hopeless once `k` is hundreds of digits long. So `P = k × G` is cheap to compute, but recovering `k` from `P` and `G` is infeasible. In both schemes the forward step is a direct calculation and the reverse is a search nobody has found a quick route through, and that gap is the whole source of the one-way difficulty.
+> Both schemes rest on a *trapdoor*: easy forwards, difficult backwards, unless you hold the shortcut (the private key). **RSA** multiplies two large primes, `n = p × q` — quick, but recovering `p` and `q` from `n` alone has no known fast method. **ECC** uses `P = k × G`, "adding" a curve point `G` to itself `k` times: easy going forward, but you can't compute `k = P ÷ G` — dividing one point by another isn't a thing, so recovering `k` means counting hops, hopeless at scale.
 {: .prompt-info }
 
 ## Certificates and Certificate Authorities
 
-That solution raises its own question straight away: how does Alice know the public key she grabbed is really *Bob's*, and not one an attacker swapped in?
+How does Alice know the public key she grabbed is really *Bob's*, and not one an attacker swapped in? **The short answer:** she doesn't check it herself — she trusts a third party that vouches the key belongs to that site. That voucher is a **Certificate Authority (CA)**, and its vouching comes as a **certificate** (a document binding a public key to a website, signed by the CA). The padlock means that check passed.
 
-**The short answer:** she doesn't check it herself. She offloads the trust to a third party that everyone already trusts, which vouches that this public key really does belong to Bob. That voucher is a **Certificate Authority**, and its vouching comes packaged as a **certificate**. When the padlock appears, it means that check quietly passed.
+Worth being precise about what the CA checks, because it's narrower than it sounds. There's no registry of "the real Bob's key" to compare against — the key is just whatever Bob generated. The CA confirms two things: that the applicant (the site's operator applying for the certificate, not the visiting browser) **controls the domain**, and that they **hold the private key** matching the public one. It proves the domain part by having the applicant add a unique token to the site's records — something only the real owner could do. So a certificate really says *the holder of this private key controls this domain* — web identity is domain control, not a personal name. My browser comes with a group of trusted CAs; a certificate signed by one of those CAs, not expired or revoked, gets the padlock.
 
-Now the mechanics. Two pieces do the work, and they're easy to blur together, so worth pulling apart:
+## The hybrid approach: what HTTPS does
 
-- a **certificate** is the digital document itself — it carries a public key *and* a claim about which website owns it (say, `example.com`);
-- a **Certificate Authority (CA)** is the trusted outside party that puts its signature on that document, vouching that the public key and the website really do go together.
-
-It's worth being precise about what that "vouching" involves, because it's narrower than it sounds. There's no master registry of "the real Bob's key" for the CA to check against — the public key is simply whatever Bob generated himself, and the CA never had a prior copy. What the CA actually confirms is two things: that whoever requested the certificate genuinely **controls the domain** it's for (they're made to prove it — place a specific file on the site, or add a DNS record only the domain's operator could add), and that they **hold the private key** matching the public key being certified (the request is signed with that private key, so the CA can check the pair fits). So a standard certificate doesn't really say "this is Bob's key" — it says *the holder of this private key controls this domain*. Identity on the web is domain control, not a personal name. That narrowness is also exactly why the domain-control check is an attack surface, as I get into below.
-
-My browser and OS arrive with a set of CAs they already trust. When a site presents its certificate, the browser checks a trusted CA signed it and that it hasn't expired or been pulled. All good → I get the padlock. Something wrong — out of date, or signed by somebody the browser doesn't recognise — and I get a warning instead. You can see this yourself: click the padlock on any HTTPS site and the certificate details show who it was issued *to*, which CA issued it, and the dates it's valid between.
-
-### But why trust the CA?
-
-The room says my browser ships knowing which CAs to trust — which just moved my suspicion up a level. *Why* is that set trustworthy, and who chose it? What I dug up:
-
-- That set is a **root store** (or trust store), and it's the **browser or OS vendor** who curates it — Mozilla, Apple, Microsoft, Google each run their own. So the honest answer to "who told my browser to trust this CA?" is: whoever built my browser did.
-- **Getting into that store is not open to all comers.** You can stand up your own CA in an afternoon, but being trusted *publicly* means being admitted to those vendors' root programmes — which requires passing independent audits and sticking to an agreed industry rulebook (the CA/Browser Forum baseline requirements), under continuing scrutiny.
-- The trust is **revocable**. CAs that have misbehaved or been compromised have been ejected from root stores before now. So a CA isn't safe *because* it's a CA — it's safe because a vendor vetted it and keeps watching, and that verdict can be reversed.
-
-## The hybrid approach: what HTTPS actually does
-
-Asymmetric encryption fixes key distribution but pays for it in speed, so no sensible system uses it for everything. Real ones marry the two:
-
-1. the browser and the site use **asymmetric** encryption to safely settle on a shared symmetric key, with nobody in the middle able to see the agreement;
-2. once that's done they drop to fast **symmetric** encryption for the rest of the conversation.
-
-Each type does the job it's good at — asymmetric handles the awkward first handshake, symmetric carries the traffic. Laid side by side:
+Asymmetric encryption fixes key distribution but is slow, so real systems combine both: use asymmetric to agree a shared symmetric key, then switch to fast symmetric for the session.
 
 | | Symmetric | Asymmetric |
 |---|---|---|
-| Keys involved | One shared key does both jobs | A pair: one public, one private |
-| Getting the key across | Both ends must already hold the same secret | The public half is handed out openly; nothing secret has to travel |
-| Speed | Quick, even at volume | Heavier — kept for small payloads |
-| Where it earns its keep | Encrypting the bulk of the traffic | Starting the connection and proving identity |
-| Everyday picture | One key that both locks and opens a chest | A street postbox: anyone posts in, only the keyholder empties it |
+| Keys | One shared key | A public/private pair |
+| Sharing | Both need the same secret | Public half shared openly |
+| Speed | Fast, even at volume | Slower; small payloads |
+| Used for | Bulk traffic | Starting the connection, proving identity |
 
-The same pairing is what sits under HTTPS, VPNs, and encrypted messaging apps.
+The same pairing runs behind HTTPS, VPNs, and encrypted messaging.
 
 ## Connects to my bigger goal
 
-The reason I'm working through these rooms is to be able to sit across from a business owner and turn this material into advice. This room handed me a good exercise for that: trace the whole chain behind the padlock, then think like the person whose job is to ask where it breaks.
+This is exactly the kind of nuts and bolts I need to get good at, and tracing the chain behind the padlock end to end is a useful way in: a website asks a CA to vouch for its public key; the CA checks domain control and signs a certificate; my browser checks the CA's signature (in the certificate) against the CA's public key (in its trusted-root store), confirms the certificate is valid, then browser and server agree a symmetric key and switch to it; the padlock appears and traffic flows encrypted.
 
-The chain, start to finish:
-
-1. A website generates a key pair and asks a **Certificate Authority** to vouch for its public key. The CA checks the applicant really controls the domain, then signs a **certificate** binding that public key to that website — signing with the CA's own private key.
-2. The website installs the certificate and serves it to any browser that connects.
-3. My browser requests the site, and the site presents its certificate.
-4. My browser verifies the CA's signature on it — using the CA's public key, which already shipped in the browser's trusted-root store — and checks the certificate hasn't expired or been revoked.
-5. Satisfied the public key genuinely belongs to the site, browser and server use asymmetric encryption to agree a shared symmetric key, then switch to fast symmetric encryption for the session.
-6. The **padlock** appears, and the page flows across encrypted.
-
-The insight I took from laying it out like this: the encryption itself is the strong part — nobody is breaking the maths. If something goes wrong, it goes wrong at one of the *trust* links around the crypto: the CA doing the vouching, the check that proves domain control, the private key sitting on the server, and the trusted-root store in the browser. For advising a client, that reframes the whole job — the useful questions aren't about the cipher, they're about those links, and the move I want to be able to make is from "you've got a padlock, you're fine" to "let's look at where this chain could actually give way." The specific ways each of those links gets attacked were new to me in working through this, so I've parked them in Revisit to study properly rather than pretend I've got them down.
+The thing that struck me: the encryption is the strong part — nobody is breaking the maths. If something breaks, it breaks at a *trust* link before the cryptography — the CA doing the vouching, the domain-control check, the private key on the server, the trusted-root store. That changes how I'd size up a "secure" site: the questions aren't about the cipher but about those links — from "there's a padlock, so it's fine" to "where could this chain give way." The specific attacks on each link were new to me here, so they sit in Revisit.
 
 ## Where I got stuck
 
-Two spots, both my own assumptions rather than the room being unclear:
-
-- **I assumed encryption also prevents tampering.** My instinct was that if an attacker can't *read* something, they can't *change* it either. Wrong — scrambling data protects confidentiality, not integrity. Ciphertext can still be altered in transit; knowing that it *wasn't* is a separate guarantee (a message authentication code / authenticated encryption), and it's one of the jobs TLS quietly does on top of the encryption.
-- **I tried to reverse ECC with plain division.** Seeing the public key written `P = k × G`, I reached for `k = P ÷ G`. It doesn't work, and seeing *why* was the valuable part: that `×` isn't ordinary multiplication and `G`, `P` aren't numbers — they're points on a curve, and you can't divide one point by another. The one-way-ness is built into the operation itself.
+- **I assumed encryption also prevents tampering.** If an attacker can't *read* it, surely they can't *change* it — wrong. Encryption protects confidentiality, not integrity; ciphertext can still be altered in transit. Catching that takes a separate tool — a **message authentication code**, a short check value derived from the data and a shared secret, which the receiver recomputes to confirm nothing changed. TLS runs this alongside the encryption.
+- **I tried to reverse ECC with plain division.** Seeing `P = k × G`, I reached for `k = P ÷ G`. It doesn't work — that `×` isn't ordinary multiplication and `G`, `P` are points, not numbers, so there's no dividing one by the other.
 
 ## Revisit
 
-- **The internals the room skips** — how AES actually mixes a block, the real maths behind RSA/ECC key generation, and digital signatures done properly.
-- **Certificate revocation** — how a browser learns a certificate was pulled *before* its printed expiry (the mechanics behind the "not revoked" check in the chain above).
-- **How each trust link in the chain gets attacked** — the maths is the strong part; the trust links around it are the real attack surface, and I want to study each one properly:
-  - **CA breach or mis-issuance** — any trusted CA can vouch for any domain, so compromising or fooling one yields a validly-signed certificate for a domain you don't own (the shape of the DigiNotar breach). Defences to understand: Certificate Transparency (every certificate logged publicly) and CAA records (naming which CAs may issue for a domain).
-  - **Domain-control subversion** — hijacking DNS or routing *during* the CA's ownership challenge to be handed a legitimate certificate.
-  - **Server private-key theft** — steal the key and you cryptographically *are* the site; Heartbleed leaked exactly this out of server memory.
-  - **Trust-store poisoning** — a rogue root certificate on a machine makes forged certificates look valid (Lenovo's Superfish; corporate proxies do it deliberately).
-  - **Stripping HTTPS before it starts** — forcing the connection to stay on plain `http`; the defence is HSTS.
+- **The internals the room skips** — how AES mixes a block, the real maths behind RSA/ECC key generation, and digital signatures done properly.
+- **Certificate revocation** — how a browser learns a certificate was pulled *before* its printed expiry.
+- **How each trust link gets attacked** — the trust links, not the cipher, are the real attack surface: CA breach or mis-issuance (defences: Certificate Transparency, CAA records), domain-control subversion, server key theft, trust-store poisoning, and HTTPS stripping (defended by HSTS).
 
 ## Lessons Learned
 
-- **The algorithm is public; only the key is secret.** Security doesn't come from hiding how the cipher works — ciphers like AES are published openly — it comes entirely from protecting the key.
-- **Asymmetric encryption is the answer to a named problem.** Symmetric encryption can't solve *getting the shared key to the other side* — the key distribution problem — and a public/private pair is precisely what removes the need to share a secret in advance.
-- **Encryption ≠ integrity.** Keeping data secret and proving it wasn't altered are two different guarantees from two different mechanisms.
-- **Real systems are hybrid.** Asymmetric handles the awkward key handover, symmetric does the fast bulk work — and that combination is what runs behind every padlock.
-- **The trust, not the maths, is the soft spot.** The cipher is the strong link; certificates, CAs, and trust stores are where security actually stands or falls.
+- **The algorithm is public; only the key is secret.** Security comes from protecting the key, not hiding the cipher.
+- **Asymmetric encryption answers a named problem** — key distribution — by removing the need to share a secret in advance.
+- **Encryption ≠ integrity.** Secrecy and tamper-proofing are two guarantees from two different mechanisms — and TLS provides both.
+- **Real systems are hybrid:** asymmetric for the handover, symmetric for the bulk — the combination that runs behind every padlock.
+- **The trust, not the maths, is the soft spot** — certificates, CAs, and trust stores are where security actually stands or falls.
 
 ## References
 
