@@ -37,12 +37,14 @@ The room builds this through Luigi's pizza takeaway. Reading it the smooth way �
 
 | Under the hood | Pizza-takeaway equivalent |
 |---|---|
-| The browser (client) kicks off a request for a web page | Alice checks Luigi's menu and tells Bob which pizza she wants |
-| It resolves the site's name to a server IP via DNS, then heads for that address | Bob types "Luigi's Pizza" into the GPS and drives to the coordinates it returns |
+| The browser (client) kicks off a request for a web page | Alice checks Luigi's menu and tells Bob which pizza she wants (the request being kicked off — Alice setting the whole errand in motion) |
+| It resolves the site's name to a server IP via DNS, then heads for that address | Bob types "Luigi's Pizza" into the GPS and drives to the coordinates it returns (the GPS turns the name "Luigi's Pizza" into map coordinates, and Bob drives to them) |
 | It connects on the right port — `8080` here, the one serving the web page | Luigi's has three doors (takeaway, dine-in, delivery); Bob takes the takeaway door |
 | It sends the HTTP request `GET /index.html` | Bob places his order: "a large pepperoni" |
-| The server replies with a status line in the response header — `200 OK` | The staff acknowledge the order and get to work |
-| The server sends the response body — the page's HTML | Bob carries the finished pizza home |
+| The server replies with a status line in the response header — `200 OK` | The staff acknowledge the order and get to work (their acknowledgement is the `200 OK` status) |
+| The server sends the response body — the page's HTML | Bob carries the finished pizza home (the pizza itself is the response body — the page's HTML arriving at the browser) |
+
+The first three rows all happen from a single human action: typing the URL into the address bar and pressing Enter. That one keystroke kicks off the request, triggers the DNS lookup, and opens the connection on the right port — rows one to three unfold before Bob has placed any order. The last three rows are the request and response themselves.
 
 A small clarification on the last two rows: the `200 OK` and the HTML aren't two separate replies. They're the two parts of a single HTTP response — the status line at the top of the response header, the body straight after — sent together in one stream. Splitting them across two rows just mirrors how the room separates the "response header" from the "response body."
 
@@ -50,7 +52,7 @@ The room's second half lets you watch the last three rows happen for real: open 
 
 ## Connects to my bigger goal
 
-The client-server model is the scaffolding under nearly everything else I'll meet in this space. Every request I'll later intercept, replay, or pick apart is, at bottom, a client asking a server for something and a server answering. Getting this pattern automatic now means the hands-on work further along — proxies, hand-crafted requests, poking at web apps — should read as variations on a shape I already know rather than new machinery each time. So it's less a fact to memorise than the frame I'll hang the later rooms on.
+The client-server model is the scaffolding under nearly everything else I'll meet in this space. Every request I'll later intercept, replay, or pick apart is, bottomline, a client asking a server for something and a server answering. Getting this pattern automatic now means the hands-on work further along — proxies, hand-crafted requests, poking at web apps — should read as variations on a shape I already know rather than new machinery each time. So it's less a fact to memorise than the frame I'll hang the later rooms on.
 
 ## Where I got stuck
 
