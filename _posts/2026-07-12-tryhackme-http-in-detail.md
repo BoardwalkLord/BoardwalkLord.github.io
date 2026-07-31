@@ -46,6 +46,20 @@ So the request isn't inside the page — the request is what produces the page. 
 
 A URL is often just scheme + host + path, but it can carry more: a **username** (for authentication), a **port** (usually 80 for HTTP, 443 for HTTPS), a **query string** (extra info sent to the path, e.g. `/blog?id=1` to request article 1), and a **fragment** (a jump-to location on the page).
 
+Putting every part in one place, a full URL can look like this:
+
+`https://admin:pass@shop.example.com:8443/products/42?colour=blue#reviews`
+
+- `https` — the scheme
+- `admin:pass` — the username (and password), for authentication
+- `shop.example.com` — the host
+- `8443` — the port
+- `/products/42` — the path
+- `?colour=blue` — the query string
+- `#reviews` — the fragment
+
+Most of that is optional. The minimum a browser needs is the scheme and the host — `https://example.com` — since the path defaults to `/`, the port is implied by the scheme, and everything else is simply left out.
+
 ### A request, broken down
 
 A minimal request is one line (`GET / HTTP/1.1`), but a real one sends **headers** too:
