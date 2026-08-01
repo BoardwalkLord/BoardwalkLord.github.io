@@ -39,7 +39,7 @@ The distinction that clarified things for me: the internet is a web of **private
 
 The room uses a helpful analogy: devices are identified two ways, like humans having both a **name** (changeable) and **fingerprints** (permanent).
 
-- **IP address** — the changeable "name." Four octets identifying a device on a network for a period of time; it can later be reassigned to another device. Follows protocols so devices all "speak the same language."
+- **IP address** — the changeable "name." An IPv4 address is four octets identifying a device on a network for a period of time; it can later be reassigned to another device. Follows protocols so devices all "speak the same language."
 - **MAC address** — the permanent "fingerprint." A twelve-character hexadecimal number assigned to the device's network interface at the factory, e.g. `a4:c3:f0:85:ac:2d`.
 
 One MAC detail I found interesting: it's split in two. The first six characters identify the manufacturer of the network interface, and the last six are a unique number for that specific device. So the MAC itself tells you who made the hardware.
