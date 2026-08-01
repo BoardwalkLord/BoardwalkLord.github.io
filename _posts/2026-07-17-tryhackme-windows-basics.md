@@ -62,7 +62,7 @@ Last room I described "process management" as an abstraction — the OS creating
 
 ### Windows Security — the built-in layer, before any third-party tool
 
-This is the part that most directly continues the "OS is already a security layer" point. Windows ships with a security dashboard covering four areas — virus & threat protection, firewall & network protection, app & browser control, and device security — on by default. The thing to hold onto isn't the feature list; it's that a fresh Windows box is not defenceless while you shop for an antivirus. There's already a baseline layer running. Third-party tools add to it; they aren't filling a void.
+This is the part that most directly continues the "OS is already a security layer" point. Windows ships with a security dashboard covering four of its areas — virus & threat protection, firewall & network protection, app & browser control, and device security — on by default. The thing to hold onto isn't the feature list; it's that a fresh Windows box is not defenceless while you shop for an antivirus. There's already a baseline layer running. Third-party tools add to it; they aren't filling a void.
 
 ### Windows Defender Firewall — and the three network profiles
 
